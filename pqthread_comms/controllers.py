@@ -106,8 +106,7 @@ class GUIAgency(QtCore.QObject):
                 raise
             self.exception_raised = False
         finally:
-            self.thread.terminate()
-            self.thread.wait()
+            self.thread.quit()
             self.application.exit()
             
 
