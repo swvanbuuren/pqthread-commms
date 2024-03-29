@@ -1,7 +1,7 @@
 # pqthread-comms
 
-`pqthreads-comms` facilitates communication between two `QThread`s as offered by
-[PySide](https://wiki.qt.io/Qt_for_Python) or
+`pqthreads-comms` facilitates communication between the main (GUI) thread and a
+dedicated `QThread`s as offered by [PySide](https://wiki.qt.io/Qt_for_Python) or
 [PyQt](https://riverbankcomputing.com/software/pyqt/).
 
 ## License
