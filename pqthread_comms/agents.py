@@ -9,6 +9,7 @@ try:
     from PySide6 import QtCore
 except ImportError:
     from PySide2 import QtCore
+from pqthread_comms import utils
 
 
 class RootTCException(Exception):
@@ -32,7 +33,8 @@ def wait_signal(signal, timeout=1000):
     yield
     if timeout is not None:
         QtCore.QTimer.singleShot(timeout, loop.quit)
-    loop.exec_()
+    utils.compat_exec(loop)
+    #loop.exec_()
 
 
 class WorkerAgent(QtCore.QObject):

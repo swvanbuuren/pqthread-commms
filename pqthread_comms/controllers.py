@@ -11,6 +11,7 @@ except ImportError:
     from PySide2 import QtCore, QtWidgets
 from pqthread_comms import agents
 from pqthread_comms import descriptors
+from pqthread_comms import utils
 
 
 class WorkerAgency(QtCore.QObject):
@@ -100,7 +101,8 @@ class GUIAgency(QtCore.QObject):
         """ Create QApplication, start worker thread and the main event loop """
         self.thread.start()
         try:
-            self.application.exec_()
+            utils.compat_exec(self.application)
+            #self.application.exec_()
         except agents.WorkerAgentException:
             if not self.exception_raised:
                 raise
@@ -108,8 +110,6 @@ class GUIAgency(QtCore.QObject):
         finally:
             self.thread.quit()
             self.application.exit()
-            
-
 
     @QtCore.Slot()
     def worker_exception(self):
