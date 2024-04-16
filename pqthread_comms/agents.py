@@ -5,10 +5,7 @@ to another using a sender and receiver
 
 from copy import copy
 from contextlib import contextmanager
-try:
-    from PySide6 import QtCore
-except ImportError:
-    from PySide2 import QtCore
+from pqthread_comms.qt import QtCore
 from pqthread_comms import utils
 
 
@@ -34,7 +31,6 @@ def wait_signal(signal, timeout=1000):
     if timeout is not None:
         QtCore.QTimer.singleShot(timeout, loop.quit)
     utils.compat_exec(loop)
-    #loop.exec_()
 
 
 class WorkerAgent(QtCore.QObject):

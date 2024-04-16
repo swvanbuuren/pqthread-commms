@@ -1,19 +1,21 @@
 """ Testing of the pqthread_comms package """
 
 import time
-import gui_worker
+from example import gui_worker
 
-def main():
+def main(agency):
     """ Test function """
+
+    ft = gui_worker.FigureTools(agency)
 
     time_delay = 0.25 # seconds
 
-    fig1 = gui_worker.figure(title='Initial title')
+    fig1 = ft.figure(title='Initial title')
     fig1.change_title(title='Another title')
 
     time.sleep(time_delay)
 
-    fig2 = gui_worker.figure(title='Initial title')
+    fig2 = ft.figure(title='Initial title')
     fig2.change_title('Latest title')
 
     time.sleep(time_delay)
@@ -22,7 +24,7 @@ def main():
 
     time.sleep(time_delay)
 
-    fig3 = gui_worker.figure()
+    fig3 = ft.figure()
 
     time.sleep(time_delay)
 
@@ -30,8 +32,8 @@ def main():
 
     time.sleep(time_delay)
 
-    fig2.close()
     fig1.close()
+    fig2.close()
 
 
 if __name__ == '__main__':

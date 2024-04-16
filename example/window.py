@@ -1,10 +1,7 @@
 """ Figure window module """
 
 import sys
-try:
-    from PySide6 import QtCore, QtWidgets
-except ImportError:
-    from PySide2 import QtCore, QtWidgets
+from pqthread_comms.qt import QtCore, QtWidgets
 
 
 class FigureWindow(QtWidgets.QMainWindow):

@@ -8,12 +8,12 @@ class AbstractDescriptor:
     """
     Abstract descriptor class that serves as base class for Descriptors
     """
-    controller = None
+    agent = None
 
     @classmethod
-    def with_controller(cls, controller):
-        """ Define a Descriptor class with defined controller """
-        cls.controller = controller
+    def with_agent(cls, agent):
+        """ Define a Descriptor class with defined agent """
+        cls.agent = agent
         return cls
 
     def __init__(self):
@@ -26,7 +26,7 @@ class AbstractDescriptor:
         raise NotImplementedError
 
     def __repr__(self):
-        return f'Descriptor(controller={repr(self.controller)}'
+        return f'Descriptor(agent={repr(self.agent)}'
 
 
 class AttributeDescriptor(AbstractDescriptor):
@@ -35,15 +35,15 @@ class AttributeDescriptor(AbstractDescriptor):
     loop
 
     This descriptor enables setting and getting object instance attributes using
-    a controller. It expects the presence of a controller object and index on
+    a agent. It expects the presence of a agent object and index on
     its parent object instance.
     """
     def __get__(self, obj, owner=None):
-        return self.controller.request(obj.index, self.name)[0]
+        return self.agent.request(obj.index, self.name)[0]
 
     def __set__(self, obj, value):
         kwargs = {self.name: value}
-        self.controller.modify(obj.index, **kwargs)
+        self.agent.modify(obj.index, **kwargs)
 
     def __repr__(self):
         return 'Attribute' + super().__repr__()
@@ -54,7 +54,7 @@ class MethodDescriptor(AbstractDescriptor):
     Custom descriptor for calling methods in the main event loop
 
     This descriptor enables calling method of an object instance using a custom
-    controller. It expects the presence of a controller object and index on its
+    agent. It expects the presence of a agent object and index on its
     parent object instance.
     """
     def __init__(self):
@@ -69,7 +69,7 @@ class MethodDescriptor(AbstractDescriptor):
         return self
 
     def __call__(self, *args, **kwargs):
-        return self.controller.method(self.index, self.name, *args, **kwargs)
+        return self.agent.method(self.index, self.name, *args, **kwargs)
 
     def __repr__(self):
         return 'Method' + super().__repr__()
@@ -80,16 +80,23 @@ class DescriptorFactory:
     """
     Factory for attribute and method descriptors that correlate to attributes
     and methods of a class in another thread. Interaction is organized through a
-    controller, which is required by the attribute and method descriptors.
+    agent, which is required by the attribute and method descriptors.
 
     Note that we need to copy the classes AttributeDescriptor and
-    MethodDescriptor (using inheritance) to avoid controller clashes with other
+    MethodDescriptor (using inheritance) to avoid agent clashes with other
     factory instances.
     """
-    def __init__(self, controller):
-        self.controller = controller
+    def __init__(self, agent=None):
+        self.agent = agent
+        self.attributes = []
         self.attribute_descriptor_class = self.copy_class(AttributeDescriptor)
         self.method_descriptor_class = self.copy_class(MethodDescriptor)
+
+    def set_agent(self, agent):
+        """ Set the agent """
+        self.agent = agent
+        for attribute in self.attributes:
+            attribute.agent = agent
 
     @staticmethod
     def copy_class(original_class):
@@ -99,14 +106,18 @@ class DescriptorFactory:
         return ClassCopy
 
     def __repr__(self):
-        return f'DescriptorFactory(controller={self.controller})'
+        return f'{self.__class__.__name__}(agent={self.agent})'
 
     @property
     def attribute(self):
         """ Produce attribute descriptor class """
-        return self.attribute_descriptor_class.with_controller(self.controller)
+        self.attributes.append(self.attribute_descriptor_class)
+        return self.attributes[-1]
+        #return self.attribute_descriptor_class.with_agent(self.agent)
 
     @property
     def method(self):
-        """ Produce attribute descriptor class """
-        return self.method_descriptor_class.with_controller(self.controller)
+        """ Produce method descriptor class """
+        self.attributes.append(self.method_descriptor_class)
+        return self.attributes[-1]
+        #return self.method_descriptor_class.with_agent(self.agent)

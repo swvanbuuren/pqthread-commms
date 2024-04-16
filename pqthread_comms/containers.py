@@ -1,10 +1,8 @@
 """ GUI Item module """
 
 import weakref
-try:
-    from PySide6 import QtCore
-except ImportError:
-    from PySide2 import QtCore
+from pqthread_comms.qt import QtCore
+from pqthread_comms import descriptors
 
 
 class RootException(Exception):
@@ -73,17 +71,25 @@ class GUIItemContainer(QtCore.QObject):
 
 class WorkerItem:
     """ Abstract Worker Item class """
-    controller = None
+    agent = None
+    factory = descriptors.DescriptorFactory()
+
+    @classmethod
+    def with_agent(cls, agent):
+        """ Set the agent """
+        cls.agent = agent
+        cls.factory.set_agent(agent)
+        return cls
 
     def __init__(self, *args, **kwargs):
-        self.index = self.controller.create(*args, **kwargs)
+        self.index = self.agent.create(*args, **kwargs)
 
     def __repr__(self):
         return f'{self.__class__.__name__}(index={self.index})'
 
     def close(self):
         """ Closes the current figure on the GUI side """
-        self.controller.delete(self.index)
+        self.agent.delete(self.index)
 
 
 class WorkerItemContainer:

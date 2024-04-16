@@ -1,32 +1,32 @@
 """ Module with end user functions """
 
-import window
+from example import window
 from pqthread_comms import controllers
 from pqthread_comms import containers
 
 
-# Setup worker side
-controllers.worker_agency.add_agent('figure')
+# Setup GUI side
+GUIAgency = controllers.GUIAgency
+GUIAgency.add_gui_items(figure=window.FigureWindow)
 
+# Setup worker side
 class FigureWorker(containers.WorkerItem):
     """ Worker thread figure to control FigureWindow on the GUI thread"""
-    controller, factory = controllers.worker_agency.agent_factory('figure')
+    factory = containers.WorkerItem.factory
     raise_window = factory.method()
     change_title = factory.method()
 
-figures_worker_container = containers.WorkerItemContainer(item_class=FigureWorker)
 
-def figure(*args, **kwargs):
-    """ Create, raise or modify FigureWorker objects """
-    if not args:
-        return figures_worker_container.create(**kwargs)
-    figure_worker = args[0]
-    figures_worker_container.current = figure_worker
-    return figure_worker
+class FigureTools:
+    """ Provides end user functions """
+    def __init__(self, worker_agency):
+        agent = worker_agency.agent('figure')
+        self.container = containers.WorkerItemContainer(item_class=FigureWorker.with_agent(agent))
 
-
-# Setup GUI side
-figures_gui_container = containers.GUIItemContainer(window.FigureWindow)
-
-GUIAgency = controllers.GUIAgency
-GUIAgency.add_container(figure=figures_gui_container)
+    def figure(self, *args, **kwargs):
+        """ Create, raise or modify FigureWorker objects """
+        if not args:
+            return self.container.create(**kwargs)
+        figure_worker = args[0]
+        self.container.current = figure_worker
+        return figure_worker

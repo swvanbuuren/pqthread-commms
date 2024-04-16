@@ -1,9 +1,6 @@
 """ Utility module """
 
-try:
-    import PySide6 as PySide
-except ImportError:
-    import PySide2 as PySide
+from pqthread_comms.qt import PySide
 
 def compat_exec(obj):
     """ Compatibility exec function """
