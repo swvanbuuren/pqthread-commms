@@ -1,6 +1,7 @@
 # pqthread-comms
 
-Expose class interfaces from the main GUI Thread in another QThread.
+Expose class interfaces from the main GUI Thread in another QThread in Qt for
+Python
 
 `pqthreads-comms` facilitates communication between the main (GUI) thread and a
 dedicated `QThread`s as offered by [PySide](https://wiki.qt.io/Qt_for_Python) or

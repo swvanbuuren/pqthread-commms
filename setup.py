@@ -11,7 +11,7 @@ setup(
     package_dir={"pqthread_comms": "pqthread_comms"},
     url='https://github.com/swvanbuuren/pqthread_comms',
     license='LICENSE',
-    description='Pqthreads-comms facilitates communication between QThreads in python ',
+    description='Expose class interfaces from the main GUI Thread in another QThread in Qt for Python',
     long_description=open('README.md').read(),
     install_requires=['PySide2',]
 )
