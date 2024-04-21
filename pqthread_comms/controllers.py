@@ -48,10 +48,12 @@ class FunctionWorker(QtCore.QObject):
         """ Run the function with exception handling """
         try:
             self.result = self.function(self.agency, *self.args, **self.kwargs)
-            self.finished.emit()
         except BaseException:
             (exception_type, value, traceback) = sys.exc_info()
             sys.excepthook(exception_type, value, traceback)
+            self.agency.error.emit()
+        finally:
+            self.finished.emit()
 
 
 class GUIAgency(QtCore.QObject):
@@ -92,6 +94,7 @@ class GUIAgency(QtCore.QObject):
         super().__init__(kwargs.pop('parent', None))
         self.result = None
         self.exception_raised = False
+        self.raised_exception = None
         if not QtWidgets.QApplication.instance():
             self.application = QtWidgets.QApplication(sys.argv)
         else:
@@ -108,6 +111,7 @@ class GUIAgency(QtCore.QObject):
         for worker_agent in self.worker_agents:
             self.worker_agency.add_agent(worker_agent)
         self.worker.moveToThread(self.thread)
+        self.worker_agency.error.connect(self.worker_exception)
         self.worker_agency.moveToThread(self.thread)
         # connect agents
         for name, agent in self.gui_agents.items():
@@ -121,15 +125,26 @@ class GUIAgency(QtCore.QObject):
         self.worker.finished.connect(self.worker.deleteLater)
         self.worker.finished.connect(self.thread.deleteLater)
 
+    def excepthook(self, exc_type, exc_value, exc_tb):
+        """ Catch any exception and print it """
+        self.raised_exception = (exc_type, exc_value, exc_tb)
+        sys.__excepthook__(exc_type, exc_value, exc_tb)
+        self.application.exit()
+
     def execute(self):
         """ Create QApplication, start worker thread and the main event loop """
         self.thread.start()
         try:
+            sys.excepthook = self.excepthook
             utils.compat_exec(self.application)
         except agents.WorkerAgentException:
             if not self.exception_raised:
                 raise
             self.exception_raised = False
+        else:
+            if self.raised_exception:
+                exc_type, exc_value, exc_tb = self.raised_exception
+                raise exc_type(exc_value).with_traceback(exc_tb)
         finally:
             self.application.exit()
 

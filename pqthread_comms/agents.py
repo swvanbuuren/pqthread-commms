@@ -128,7 +128,7 @@ class GUIAgent(QtCore.QObject):
 
     @contextmanager
     def register_exception(self):
-        """ Register errors at receiver side """
+        """ Shorthand to register errors at receiver side """
         try:
             yield
         except BaseException:
@@ -162,4 +162,5 @@ class GUIAgent(QtCore.QObject):
     @QtCore.Slot(int)
     def delete_slot(self, index):
         """ Slot for closing/deleting a class instance object at index """
-        self.delete(index)
+        with self.register_exception():
+            self.delete(index)
