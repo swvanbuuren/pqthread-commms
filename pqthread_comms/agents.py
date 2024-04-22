@@ -22,17 +22,6 @@ class GUIAgentException(RootTCException):
     """ This Exception is raised if an error at receiver side was detected """
 
 
-@contextmanager
-def wait_signal(signal, timeout=1000):
-    """Block loop until signal emitted, or timeout (ms) elapses."""
-    loop = QtCore.QEventLoop()
-    signal.connect(loop.quit)
-    yield
-    if timeout is not None:
-        QtCore.QTimer.singleShot(timeout, loop.quit)
-    utils.compat_exec(loop)
-
-
 class WorkerAgent(QtCore.QObject):
     """ Enables exchange of data with GUIAgent using signal/slots """
     createSignal = QtCore.Signal(list, dict)
@@ -64,7 +53,7 @@ class WorkerAgent(QtCore.QObject):
 
     def create(self, *args, **kwargs):
         """ Send out a signal and obtain data from gui_agent"""
-        with wait_signal(self.dataRecevied):
+        with utils.wait_signal(self.dataRecevied):
             self.createSignal.emit(args, kwargs)
         return self.read_message()
 
@@ -74,13 +63,13 @@ class WorkerAgent(QtCore.QObject):
 
     def request(self, index, *args):
         """ Obtain data from gui_agent"""
-        with wait_signal(self.dataRecevied):
+        with utils.wait_signal(self.dataRecevied):
             self.requestSignal.emit(index, args)
         return self.read_message()
 
     def method(self, index, func_name, *args, **kwargs):
         """ Send out a signal to execute a method on the gui_agent class """
-        with wait_signal(self.dataRecevied):
+        with utils.wait_signal(self.dataRecevied):
             self.methodSignal.emit(index, func_name, args, kwargs)
         return self.read_message()
 
