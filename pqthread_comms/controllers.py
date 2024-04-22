@@ -92,18 +92,22 @@ class GUIAgency(QtCore.QObject):
 
     def __init__(self, worker, *args, **kwargs):
         super().__init__(kwargs.pop('parent', None))
+        self.application = self.get_application()
         self.result = None
         self.exception_raised = False
         self.raised_exception = None
-        if not QtWidgets.QApplication.instance():
-            self.application = QtWidgets.QApplication(sys.argv)
-        else:
-            self.application = QtWidgets.QApplication.instance()
         self.thread = QtCore.QThread(parent=self)
         self.worker_agency = WorkerAgency()
         self.worker = FunctionWorker(worker, self.worker_agency, *args, **kwargs)
         self.setup_worker()
         self.execute()
+
+    @staticmethod
+    def get_application():
+        """ Returns the QApplication instance """
+        if not QtWidgets.QApplication.instance():
+            return QtWidgets.QApplication(sys.argv)
+        return QtWidgets.QApplication.instance()
 
     def setup_worker(self):
         """ Setup worker thread """
@@ -111,7 +115,6 @@ class GUIAgency(QtCore.QObject):
         for worker_agent in self.worker_agents:
             self.worker_agency.add_agent(worker_agent)
         self.worker.moveToThread(self.thread)
-        self.worker_agency.error.connect(self.worker_exception)
         self.worker_agency.moveToThread(self.thread)
         # connect agents
         for name, agent in self.gui_agents.items():
@@ -129,6 +132,7 @@ class GUIAgency(QtCore.QObject):
         """ Catch any exception and print it """
         self.raised_exception = (exc_type, exc_value, exc_tb)
         sys.__excepthook__(exc_type, exc_value, exc_tb)
+        self.thread.exit()
         self.application.exit()
 
     def execute(self):
@@ -137,11 +141,6 @@ class GUIAgency(QtCore.QObject):
         try:
             sys.excepthook = self.excepthook
             utils.compat_exec(self.application)
-        except agents.WorkerAgentException:
-            if not self.exception_raised:
-                raise
-            self.exception_raised = False
-        else:
             if self.raised_exception:
                 exc_type, exc_value, exc_tb = self.raised_exception
                 raise exc_type(exc_value).with_traceback(exc_tb)
@@ -152,8 +151,3 @@ class GUIAgency(QtCore.QObject):
     def fetch_worker_result(self):
         """ Slot to fetch worker result """
         self.result = self.worker.result
-
-    @QtCore.Slot()
-    def worker_exception(self):
-        """ Slot to react on a work exception """
-        self.exception_raised = True
