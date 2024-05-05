@@ -21,6 +21,7 @@ class GUIItemContainer(QtCore.QObject):
     def __init__(self, item_class, parent=None):
         super().__init__(parent)
         self.items = []
+        self.indices = []
         self.item_class = item_class
 
     def __repr__(self):
@@ -29,7 +30,9 @@ class GUIItemContainer(QtCore.QObject):
     @property
     def count(self):
         """ Current number of items """
-        return len(self.items)
+        if not self.indices:
+            return 0
+        return max(self.indices) + 1
 
     def back(self):
         """ Returns the last item """
@@ -40,6 +43,7 @@ class GUIItemContainer(QtCore.QObject):
         index = self.count
         new_item = self.item_class(index, *args, **kwargs)
         self.items.append(new_item)
+        self.indices.append(index)
         return index
 
     def request(self, index, args):
@@ -64,7 +68,9 @@ class GUIItemContainer(QtCore.QObject):
 
     def delete(self, index):
         """ Deletes the item at index """
-        item = self.items.pop(index)
+        remove_index = self.indices.index(index)
+        del self.indices[remove_index]
+        item = self.items.pop(remove_index)
         item.delete()
         del item
 
