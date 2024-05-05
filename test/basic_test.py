@@ -1,6 +1,7 @@
 """ Test the pqthread_comms container module """
 
 import pytest
+from example import window
 from example import gui_worker
 
 
@@ -16,7 +17,7 @@ def test_basic():
     gui_worker.GUIAgency(worker=worker)
 
 
-def test_method_return():
+def test_method():
     """ Test return value of method call from the worker thread """
 
     def worker(agency: gui_worker.GUIAgency):
@@ -30,6 +31,35 @@ def test_method_return():
     agency = gui_worker.GUIAgency(worker=worker)
     assert agency.result == 'Figure 1: Hello from worker'
 
+def test_attribute():
+    """ Test attribute property """
+
+    def worker(agency: gui_worker.GUIAgency):
+        """ Helper function """
+        ft = gui_worker.FigureTools(agency)
+        fig = ft.figure()
+        fig.title = 'Hello from worker'
+        title = fig.title
+        fig.close()
+        return title
+
+    agency = gui_worker.GUIAgency(worker=worker)
+    assert agency.result == 'Figure 1: Hello from worker'
+
+
+def test_gui_exception():
+    """ Test exception in GUI thread """
+
+    def worker(agency: gui_worker.GUIAgency):
+        """ Helper function """
+        ft = gui_worker.FigureTools(agency)
+        fig = ft.figure()
+        fig.raise_exception()
+        fig.close()
+
+    with pytest.raises(window.FigureWindowException):
+        gui_worker.GUIAgency(worker=worker)
+
 
 def test_multiple_figure_closure():
     """ Test closure of multiple figures """
@@ -39,8 +69,12 @@ def test_multiple_figure_closure():
         ft = gui_worker.FigureTools(agency)
         fig1 = ft.figure()
         fig2 = ft.figure()
+        fig3 = ft.figure()
+        fig4 = ft.figure()
         fig1.close()
+        fig3.close()
         fig2.close()
+        fig4.close()
 
     try:
         gui_worker.GUIAgency(worker=worker)

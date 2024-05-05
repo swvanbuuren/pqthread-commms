@@ -4,6 +4,10 @@ import sys
 from pqthread_comms.qt import QtCore, QtWidgets
 
 
+class FigureWindowException(Exception):
+    """ Exception for FigureWindow """
+
+
 class FigureWindow(QtWidgets.QMainWindow):
     """ Figure """
 
@@ -20,6 +24,16 @@ class FigureWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(title)
         return title
 
+    @property
+    def title(self):
+        """ Returns the window title """
+        return self.windowTitle()
+
+    @title.setter
+    def title(self, title):
+        """ Sets the window title """
+        self.change_title(title)
+
     def raise_window(self):
         """ Raises the current window to top """
         if sys.platform == 'win32':
@@ -28,6 +42,10 @@ class FigureWindow(QtWidgets.QMainWindow):
             self.activateWindow()
         else:
             self.raise_()
+
+    def raise_exception(self):
+        """ Method to raise custom exception for testing purposes """
+        raise FigureWindowException('Custom exception')
 
     def delete(self):
         """ Closes the window """

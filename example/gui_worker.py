@@ -15,6 +15,8 @@ class FigureWorker(containers.WorkerItem):
     factory = containers.WorkerItem.factory
     raise_window = factory.method()
     change_title = factory.method()
+    title = factory.attribute()
+    raise_exception = factory.method()
 
 
 class FigureTools:

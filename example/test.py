@@ -37,4 +37,9 @@ def main(agency):
 
 
 if __name__ == '__main__':
-    gui_worker.GUIAgency(worker=main)
+    try:
+        gui_worker.GUIAgency(worker=main)
+    except IndexError:
+        print('Unexpected Index error!')
+    except RuntimeError:
+        print('Unexpected Runtime error!')
