@@ -81,8 +81,12 @@ class WorkerAgent(QtCore.QObject):
         """ Helper method, that reads message set by slot and returns a copy """
         if self.message is self.no_message:
             if self.error:
-                raise GUIAgentException('Error detected at gui_agent side')
-            raise WorkerAgentException('No message received')
+                return self.message
+                # we don't raise this error anymore, since it's caught in the
+                # GUIAgency
+                # raise GUIAgentException('Error detected at gui_agent side')
+            if not self.error:
+                raise WorkerAgentException('No message received')
         message = copy(self.message)
         self.message = self.no_message
         return message

@@ -49,8 +49,6 @@ class FunctionWorker(QtCore.QObject):
         try:
             self.result = self.function(self.agency, *self.args, **self.kwargs)
         except BaseException:
-            (exception_type, value, traceback) = sys.exc_info()
-            sys.excepthook(exception_type, value, traceback)
             self.agency.error.emit()
         finally:
             self.finished.emit()
