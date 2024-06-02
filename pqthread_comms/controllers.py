@@ -123,12 +123,7 @@ class GUIAgency(QtCore.QObject):
             self.worker_agency.agent(name).connect_agent(agent)
         # connect other signals/slots
         self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.fetch_worker_result)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.thread.wait)
-        self.worker.finished.connect(self.worker_agency.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.worker.finished.connect(self.thread.deleteLater)
+        self.worker.finished.connect(self.stop_thread)
 
     def excepthook(self, exc_type, exc_value, exc_tb):
         """ Catch any exception and print it """
@@ -150,6 +145,9 @@ class GUIAgency(QtCore.QObject):
             self.application.exit()
 
     @QtCore.Slot()
-    def fetch_worker_result(self):
-        """ Slot to fetch worker result """
+    def stop_thread(self):
+        """ Stop the worker thread """
         self.result = self.worker.get_result()
+        self.thread.quit()
+        self.thread.wait()
+        print('\nworker thread has been stopped!')
