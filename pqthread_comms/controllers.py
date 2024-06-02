@@ -129,7 +129,7 @@ class GUIAgency(QtCore.QObject):
         """ Catch any exception and print it """
         self.raised_exception = (exc_type, exc_value, exc_tb)
         sys.__excepthook__(exc_type, exc_value, exc_tb)
-        self.thread.exit()
+        self.stop_thread()
         self.application.exit()
 
     def execute(self):
