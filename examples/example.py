@@ -1,7 +1,7 @@
 """ Testing of the pqthread_comms package """
 
 import time
-from examples import gui_worker
+from pqthread_comms.examples import gui_worker
 
 def main(agency):
     """ Test function """

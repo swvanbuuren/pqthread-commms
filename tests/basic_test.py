@@ -1,8 +1,8 @@
 """ Test the pqthread_comms container module """
 
 import pytest
-from examples import window
-from examples import gui_worker
+from pqthread_comms.examples import window
+from pqthread_comms.examples import gui_worker
 
 
 def test_basic():
