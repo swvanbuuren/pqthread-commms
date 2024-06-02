@@ -19,7 +19,7 @@ class FigureWorker(containers.WorkerItem):
     raise_exception = factory.method()
 
 
-class FigureTools:
+class FigureTools: # pylint: disable=too-few-public-methods
     """ Provides end user functions """
     def __init__(self, worker_agency):
         agent = worker_agency.agent('figure')
