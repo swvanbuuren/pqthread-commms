@@ -101,7 +101,7 @@ class DescriptorFactory:
     @staticmethod
     def copy_class(original_class):
         """ Creates a copy of a class using inheritance """
-        class ClassCopy(original_class):
+        class ClassCopy(original_class): # pylint: disable=too-few-public-methods
             """ Copy of Class original_class """
         return ClassCopy
 

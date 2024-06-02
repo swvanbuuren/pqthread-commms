@@ -48,10 +48,14 @@ class FunctionWorker(QtCore.QObject):
         """ Run the function with exception handling """
         try:
             self.result = self.function(self.agency, *self.args, **self.kwargs)
-        except BaseException:
+        except BaseException: # pylint: disable=broad-except
             self.agency.error.emit()
         finally:
             self.finished.emit()
+
+    def get_result(self):
+        """ Return the result """
+        return self.result
 
 
 class GUIAgency(QtCore.QObject):
@@ -148,4 +152,4 @@ class GUIAgency(QtCore.QObject):
     @QtCore.Slot()
     def fetch_worker_result(self):
         """ Slot to fetch worker result """
-        self.result = self.worker.result
+        self.result = self.worker.get_result()
