@@ -17,7 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-
+    env:
+      DISPLAY: ':99.0'
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -29,10 +30,13 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install pylint pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        sudo apt-get update && sudo apt-get install -y libegl1-mesa-dev
     - name: Lint with pylint
       run: |
         pylint pqthread_comms
+    - name: Install test dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils
+        /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
     - name: Test with pytest
       run: |
         pytest
