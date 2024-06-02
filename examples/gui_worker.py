@@ -1,6 +1,6 @@
 """ Module with end user functions """
 
-from example import window
+from examples import window
 from pqthread_comms import controllers
 from pqthread_comms import containers
 
