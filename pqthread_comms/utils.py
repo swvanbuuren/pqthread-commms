@@ -14,10 +14,12 @@ def compat_exec(obj):
 
 
 @contextmanager
-def wait_signal(signal, timeout=1000):
+def wait_signal(signal, error_signal=None, timeout=1000):
     """Block loop until signal emitted, or timeout (ms) elapses."""
     loop = QtCore.QEventLoop()
     signal.connect(loop.quit)
+    if error_signal is not None:
+        error_signal.connect(loop.quit)
     yield
     if timeout is not None:
         QtCore.QTimer.singleShot(timeout, loop.quit)

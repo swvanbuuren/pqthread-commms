@@ -30,6 +30,7 @@ class WorkerAgent(QtCore.QObject):
     methodSignal = QtCore.Signal(int, str, list, dict)
     deleteSignal = QtCore.Signal(int)
     dataRecevied = QtCore.Signal()
+    errorSignal = QtCore.Signal()
 
     def __init__(self, name, parent=None):
         super().__init__(parent)
@@ -53,7 +54,7 @@ class WorkerAgent(QtCore.QObject):
 
     def create(self, *args, **kwargs):
         """ Send out a signal and obtain data from gui_agent"""
-        with utils.wait_signal(self.dataRecevied):
+        with utils.wait_signal(self.dataRecevied, self.errorSignal):
             self.createSignal.emit(args, kwargs)
         return self.read_message()
 
@@ -63,13 +64,13 @@ class WorkerAgent(QtCore.QObject):
 
     def request(self, index, *args):
         """ Obtain data from gui_agent"""
-        with utils.wait_signal(self.dataRecevied):
+        with utils.wait_signal(self.dataRecevied, self.errorSignal):
             self.requestSignal.emit(index, args)
         return self.read_message()
 
     def method(self, index, func_name, *args, **kwargs):
         """ Send out a signal to execute a method on the gui_agent class """
-        with utils.wait_signal(self.dataRecevied):
+        with utils.wait_signal(self.dataRecevied, self.errorSignal):
             self.methodSignal.emit(index, func_name, args, kwargs)
         return self.read_message()
 
