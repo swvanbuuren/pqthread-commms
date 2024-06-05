@@ -154,4 +154,3 @@ class GUIAgency(QtCore.QObject):
         self.result = self.worker.get_result()
         self.thread.quit()
         self.thread.wait()
-        print('\nworker thread has been stopped!')
