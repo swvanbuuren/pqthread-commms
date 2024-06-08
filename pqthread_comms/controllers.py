@@ -13,7 +13,8 @@ from pqthread_comms import containers
 
 class WorkerAgency(QtCore.QObject):
     """ Owns all worker agents """
-    errorSignal = QtCore.Signal()
+    stopSignalwait = QtCore.Signal()
+    workerErrorSignal = QtCore.Signal()
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop('parent', None))
@@ -25,7 +26,7 @@ class WorkerAgency(QtCore.QObject):
     def add_agent(self, name):
         """ Adds a new sender """
         self.worker_agents[name] = agents.WorkerAgent(name, parent=self)
-        self.errorSignal.connect(self.worker_agents[name].stopWaitingForSignals.emit)
+        self.stopSignalwait.connect(self.worker_agents[name].stopSignalwait.emit)
 
     def agent(self, name):
         """ Returns the worker agent """
@@ -47,12 +48,13 @@ class FunctionWorker(QtCore.QObject):
     @QtCore.Slot()
     def run(self):
         """ Run the function with exception handling """
-        #try:
-        self.result = self.function(self.agency, *self.args, **self.kwargs)
-        #except BaseException: # pylint: disable=broad-except
-        #    print('Caught!')
-        #    self.agency.error.emit()
-        self.finished.emit()
+        try:
+            self.result = self.function(self.agency, *self.args, **self.kwargs)
+        except BaseException: # pylint: disable=broad-except
+            self.agency.workerErrorSignal.emit()
+            raise
+        finally:
+            self.finished.emit()
 
     def get_result(self):
         """ Return the result """
@@ -122,6 +124,7 @@ class GUIAgency(QtCore.QObject):
         # connect agents
         for name, agent in self.gui_agents.items():
             self.worker_agency.agent(name).connect_agent(agent)
+        self.worker_agency.workerErrorSignal.connect(self.application.closeAllWindows)
         # connect other signals/slots
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.stop_thread)
@@ -130,7 +133,7 @@ class GUIAgency(QtCore.QObject):
         """ Catch any exception and print it """
         self.raised_exception = (exc_type, exc_value, exc_tb)
         sys.__excepthook__(exc_type, exc_value, exc_tb)
-        self.worker_agency.errorSignal.emit()
+        self.worker_agency.stopSignalwait.emit()
 
     def execute(self):
         """ Create QApplication, start worker thread and the main event loop """
@@ -150,3 +153,4 @@ class GUIAgency(QtCore.QObject):
         self.result = self.worker.get_result()
         self.thread.quit()
         self.thread.wait()
+        print('killing thread')

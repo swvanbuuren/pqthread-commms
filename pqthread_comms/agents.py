@@ -30,7 +30,7 @@ class WorkerAgent(QtCore.QObject):
     methodSignal = QtCore.Signal(int, str, list, dict)
     deleteSignal = QtCore.Signal(int)
     dataRecevied = QtCore.Signal()
-    stopWaitingForSignals = QtCore.Signal()
+    stopSignalwait = QtCore.Signal()
 
     def __init__(self, name, parent=None):
         super().__init__(parent)
@@ -54,7 +54,7 @@ class WorkerAgent(QtCore.QObject):
 
     def create(self, *args, **kwargs):
         """ Send out a signal and obtain data from gui_agent"""
-        with utils.wait_signal(self.dataRecevied, self.stopWaitingForSignals):
+        with utils.wait_signal(self.dataRecevied, self.stopSignalwait):
             self.createSignal.emit(args, kwargs)
         return self.read_message()
 
@@ -64,13 +64,13 @@ class WorkerAgent(QtCore.QObject):
 
     def request(self, index, *args):
         """ Obtain data from gui_agent"""
-        with utils.wait_signal(self.dataRecevied, self.stopWaitingForSignals):
+        with utils.wait_signal(self.dataRecevied, self.stopSignalwait):
             self.requestSignal.emit(index, args)
         return self.read_message()
 
     def method(self, index, func_name, *args, **kwargs):
         """ Send out a signal to execute a method on the gui_agent class """
-        with utils.wait_signal(self.dataRecevied, self.stopWaitingForSignals):
+        with utils.wait_signal(self.dataRecevied, self.stopSignalwait):
             self.methodSignal.emit(index, func_name, args, kwargs)
         return self.read_message()
 
@@ -105,7 +105,7 @@ class WorkerAgent(QtCore.QObject):
     def deleteLater(self): # pylint: disable=invalid-name
         """ Make sure all eventloops in utils.signal_wait are quit before the
         agent is deleted """
-        self.stopWaitingForSignals.emit()
+        self.stopSignalwait.emit()
         super().deleteLater()
 
 

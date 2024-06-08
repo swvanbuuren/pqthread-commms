@@ -5,9 +5,14 @@ from pqthread_comms import controllers
 from pqthread_comms import containers
 
 
+class FigureWorkerException(Exception):
+    """ Exception for FigureWorker """
+
+
 # Setup GUI side
 GUIAgency = controllers.GUIAgency
 GUIAgency.add_gui_items(figure=window.FigureWindow)
+
 
 # Setup worker side
 class FigureWorker(containers.WorkerItem):
@@ -17,6 +22,10 @@ class FigureWorker(containers.WorkerItem):
     change_title = factory.method()
     title = factory.attribute()
     raise_exception = factory.method()
+
+    def raise_worker_exception(self):
+        """ Method to raise custom exception for testing purposes """
+        raise FigureWorkerException('Custom exception')
 
 
 class FigureTools: # pylint: disable=too-few-public-methods
