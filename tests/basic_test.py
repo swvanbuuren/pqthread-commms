@@ -61,6 +61,20 @@ def test_gui_exception():
         gui_worker.GUIAgency(worker=worker)
 
 
+def test_worker_exception():
+    """ Test exception in worker thread """
+
+    def worker(agency: gui_worker.GUIAgency):
+        """ Helper function """
+        ft = gui_worker.FigureTools(agency)
+        fig = ft.figure()
+        fig.raise_worker_exception()
+        fig.close()
+
+    with pytest.raises(gui_worker.FigureWorkerException):
+        gui_worker.GUIAgency(worker=worker)
+
+
 def test_multiple_figure_closure():
     """ Test closure of multiple figures """
 
