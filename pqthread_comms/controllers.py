@@ -13,6 +13,7 @@ from pqthread_comms import containers
 
 class WorkerAgency(QtCore.QObject):
     """ Owns all worker agents """
+    errorSignal = QtCore.Signal()
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop('parent', None))
@@ -24,16 +25,11 @@ class WorkerAgency(QtCore.QObject):
     def add_agent(self, name):
         """ Adds a new sender """
         self.worker_agents[name] = agents.WorkerAgent(name, parent=self)
+        self.errorSignal.connect(self.worker_agents[name].stopWaitingForSignals.emit)
 
     def agent(self, name):
         """ Returns the worker agent """
         return self.worker_agents[name]
-
-    @QtCore.Slot()
-    def signal_error(self):
-        """ Signal error to all agents """
-        for agent in self.worker_agents.values():
-            agent.errorSignal.emit()
 
 
 class FunctionWorker(QtCore.QObject):
@@ -134,7 +130,7 @@ class GUIAgency(QtCore.QObject):
         """ Catch any exception and print it """
         self.raised_exception = (exc_type, exc_value, exc_tb)
         sys.__excepthook__(exc_type, exc_value, exc_tb)
-        self.worker_agency.signal_error()
+        self.worker_agency.errorSignal.emit()
 
     def execute(self):
         """ Create QApplication, start worker thread and the main event loop """
