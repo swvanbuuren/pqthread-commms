@@ -114,14 +114,14 @@ class GUIAgent(QtCore.QObject):
     signal = QtCore.Signal(object)
     error = QtCore.Signal()
 
-    def __init__(self, controller, parent=None):
+    def __init__(self, container, parent=None):
         super().__init__(parent)
-        self.controller = controller
-        self.create = controller.create
-        self.modify =  controller.modify
-        self.request = controller.request
-        self.method = controller.method
-        self.delete = controller.delete
+        self.container = container
+        self.create = container.create
+        self.modify =  container.modify
+        self.request = container.request
+        self.method = container.method
+        self.delete = container.delete
 
     def __repr__(self):
         return f'{self.__class__.__name__}(name={self.name})'
