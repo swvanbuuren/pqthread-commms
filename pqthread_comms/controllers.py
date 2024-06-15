@@ -12,6 +12,10 @@ from pqthread_comms import utils
 from pqthread_comms import containers
 
 
+class MissingReferenceError(Exception):
+    """ Exception for missing references """
+
+
 class WeakReferences:
     """ Class for holding weak references """
     def __init__(self):
@@ -28,7 +32,7 @@ class WeakReferences:
         except KeyError as exc:
             raise KeyError(f'No weak reference found for {name}') from exc
         if not ref:
-            raise RuntimeError(f'No weak reference set to {name}')
+            raise MissingReferenceError(f'No weak reference set to {name}')
         return ref
 
 
@@ -58,7 +62,7 @@ class WorkerAgency(QtCore.QObject):
         return self.worker_agents[name]
 
     def add_container(self, name, item_class: containers.WorkerItem):
-        """ Adds a new container, including a weak reference """
+        """ Adds a new container, including a module wide weak reference """
         item_class = item_class.with_agent(self.agent(name))
         self.worker_containers[name] = containers.WorkerItemContainer(item_class=item_class)
         weak_refs.add(name, self.worker_containers[name])
