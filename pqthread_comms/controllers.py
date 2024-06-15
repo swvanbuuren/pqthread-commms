@@ -5,16 +5,41 @@ worker thread and the GUI thread.
 """
 
 import sys
+import weakref
 from pqthread_comms.qt import QtCore, QtWidgets
 from pqthread_comms import agents
 from pqthread_comms import utils
 from pqthread_comms import containers
 
 
+class WeakReferences:
+    """ Class for holding weak references """
+    def __init__(self):
+        self.refs = {}
+
+    def add(self, name, agent):
+        """ Adds a new weak reference """
+        self.refs[name] = weakref.proxy(agent)
+
+    def get(self, name):
+        """ Returns the weak reference """
+        try:
+            ref = self.refs[name]
+        except KeyError as exc:
+            raise KeyError(f'No weak reference found for {name}') from exc
+        if not ref:
+            raise RuntimeError(f'No weak reference set to {name}')
+        return ref
+
+
+weak_refs = WeakReferences()
+
+
 class WorkerAgency(QtCore.QObject):
     """ Owns all worker agents """
     stopSignalwait = QtCore.Signal()
     workerErrorSignal = QtCore.Signal()
+    worker_containers = {}
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop('parent', None))
@@ -31,6 +56,12 @@ class WorkerAgency(QtCore.QObject):
     def agent(self, name):
         """ Returns the worker agent """
         return self.worker_agents[name]
+
+    def add_container(self, name, item_class: containers.WorkerItem):
+        """ Adds a new container, including a weak reference """
+        item_class = item_class.with_agent(self.agent(name))
+        self.worker_containers[name] = containers.WorkerItemContainer(item_class=item_class)
+        weak_refs.add(name, self.worker_containers[name])
 
 
 class FunctionWorker(QtCore.QObject):
@@ -49,7 +80,7 @@ class FunctionWorker(QtCore.QObject):
     def run(self):
         """ Run the function with exception handling """
         try:
-            self.result = self.function(self.agency, *self.args, **self.kwargs)
+            self.result = self.function(*self.args, **self.kwargs)
         except BaseException: # pylint: disable=broad-except
             self.agency.workerErrorSignal.emit()
             raise
@@ -105,6 +136,9 @@ class GUIAgency(QtCore.QObject):
         self.worker_agency = WorkerAgency()
         self.worker = FunctionWorker(worker, self.worker_agency, *args, **kwargs)
         self.setup_worker()
+
+    def kickoff(self):
+        """ Kick off the worker thread """
         self.execute()
 
     @staticmethod

@@ -28,16 +28,22 @@ class FigureWorker(containers.WorkerItem):
         raise FigureWorkerException('Custom exception')
 
 
-class FigureTools: # pylint: disable=too-few-public-methods
-    """ Provides end user functions """
-    def __init__(self, worker_agency):
-        agent = worker_agency.agent('figure')
-        self.container = containers.WorkerItemContainer(item_class=FigureWorker.with_agent(agent))
+def figure(*args, **kwargs):
+    """ Create, raise or modify FigureWorker objects """
+    container = controllers.weak_refs.get('figure')
+    if not args:
+        return container.create(**kwargs)
+    figure_worker = args[0]
+    container.current = figure_worker
+    return figure_worker
 
-    def figure(self, *args, **kwargs):
-        """ Create, raise or modify FigureWorker objects """
-        if not args:
-            return self.container.create(**kwargs)
-        figure_worker = args[0]
-        self.container.current = figure_worker
-        return figure_worker
+
+def decorator(func):
+    """ Decorator for end user functions, adding figure functionality"""
+    def wrapper():
+        """ Wrapper """
+        gui_agency = GUIAgency(worker=func)
+        gui_agency.worker_agency.add_container('figure', FigureWorker)
+        gui_agency.kickoff()
+        return gui_agency.result
+    return wrapper
