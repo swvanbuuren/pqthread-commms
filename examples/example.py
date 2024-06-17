@@ -1,7 +1,7 @@
-""" Testing of the pqthread_comms package """
+""" Testing of the pqthreads package """
 
 import time
-from pqthread_comms.examples import gui_worker as gw
+from pqthreads.examples import gui_worker as gw
 
 
 @gw.decorator

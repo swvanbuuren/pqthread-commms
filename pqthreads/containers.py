@@ -1,8 +1,8 @@
 """ GUI Item module """
 
 import weakref
-from pqthread_comms.qt import QtCore
-from pqthread_comms import descriptors
+from pqthreads.qt import QtCore
+from pqthreads import descriptors
 
 
 class RootException(Exception):

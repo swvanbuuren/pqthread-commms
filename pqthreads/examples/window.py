@@ -1,7 +1,7 @@
 """ Figure window module """
 
 import sys
-from pqthread_comms.qt import QtCore, QtWidgets
+from pqthreads.qt import QtCore, QtWidgets
 
 
 class FigureWindowException(Exception):

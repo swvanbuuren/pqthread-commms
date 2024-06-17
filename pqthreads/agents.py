@@ -5,8 +5,8 @@ to another using a sender and receiver
 
 from copy import copy
 from contextlib import contextmanager
-from pqthread_comms.qt import QtCore
-from pqthread_comms import utils
+from pqthreads.qt import QtCore
+from pqthreads import utils
 
 
 class RootTCException(Exception):

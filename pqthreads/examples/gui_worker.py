@@ -1,8 +1,8 @@
 """ Module with end user functions """
 
-from pqthread_comms.examples import window
-from pqthread_comms import controllers
-from pqthread_comms import containers
+from pqthreads.examples import window
+from pqthreads import controllers
+from pqthreads import containers
 
 
 class FigureWorkerException(Exception):

@@ -1,8 +1,8 @@
 """ Utility module """
 
 from contextlib import contextmanager
-from pqthread_comms.qt import PySide
-from pqthread_comms.qt import QtCore
+from pqthreads.qt import PySide
+from pqthreads.qt import QtCore
 
 
 def compat_exec(obj):

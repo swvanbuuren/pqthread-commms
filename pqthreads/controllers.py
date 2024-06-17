@@ -6,10 +6,10 @@ worker thread and the GUI thread.
 
 import sys
 import weakref
-from pqthread_comms.qt import QtCore, QtWidgets
-from pqthread_comms import agents
-from pqthread_comms import utils
-from pqthread_comms import containers
+from pqthreads.qt import QtCore, QtWidgets
+from pqthreads import agents
+from pqthreads import utils
+from pqthreads import containers
 
 
 class MissingReferenceError(Exception):
