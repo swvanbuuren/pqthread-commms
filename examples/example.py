@@ -1,21 +1,21 @@
 """ Testing of the pqthreads package """
 
 import time
-from pqthreads.examples import gui_worker as gw
+from pqthreads.examples import worker
 
 
-@gw.decorator
+@worker.decorator
 def main():
     """ Test function """
 
     time_delay = 0.25 # seconds
 
-    fig1 = gw.figure(title='Initial title')
+    fig1 = worker.figure(title='Initial title')
     fig1.change_title(title='Another title')
 
     time.sleep(time_delay)
 
-    fig2 = gw.figure(title='Initial title')
+    fig2 = worker.figure(title='Initial title')
     fig2.change_title('Latest title')
 
     time.sleep(time_delay)
@@ -24,7 +24,7 @@ def main():
 
     time.sleep(time_delay)
 
-    fig3 = gw.figure()
+    fig3 = worker.figure()
 
     time.sleep(time_delay)
 
