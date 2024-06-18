@@ -30,7 +30,7 @@ class FigureWorker(containers.WorkerItem):
 
 def figure(*args, **kwargs):
     """ Create, raise or modify FigureWorker objects """
-    container = controllers.weak_refs.get('figure')
+    container = controllers.worker_refs.get('figure')
     if not args:
         return container.create(**kwargs)
     figure_worker = args[0]

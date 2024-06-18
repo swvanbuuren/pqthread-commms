@@ -36,7 +36,8 @@ class WeakReferences:
         return ref
 
 
-weak_refs = WeakReferences()
+worker_refs = WeakReferences()
+gui_refs = WeakReferences()
 
 
 class WorkerAgency(QtCore.QObject):
@@ -65,7 +66,7 @@ class WorkerAgency(QtCore.QObject):
         """ Adds a new container, including a module wide weak reference """
         item_class = item_class.with_agent(self.agent(name))
         self.worker_containers[name] = containers.WorkerItemContainer(item_class=item_class)
-        weak_refs.add(name, self.worker_containers[name])
+        worker_refs.add(name, self.worker_containers[name])
 
 
 class FunctionWorker(QtCore.QObject):
@@ -119,6 +120,7 @@ class GUIAgency(QtCore.QObject):
     @classmethod
     def add_single_gui_container(cls, name, container):
         """ Add GUI item container """
+        gui_refs.add(name, container)
         cls.gui_agents[name] = agents.GUIAgent(container)
         cls.add_worker_agents(name)
         return cls
