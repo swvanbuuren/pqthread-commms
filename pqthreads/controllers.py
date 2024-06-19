@@ -103,34 +103,12 @@ class GUIAgency(QtCore.QObject):
     worker_agents = []
 
     @classmethod
-    def add_gui_items(cls, **gui_items):
-        """ Add GUI items """
-        for name, item in gui_items.items():
-            container = containers.GUIItemContainer(item)
-            cls.add_single_gui_container(name, container)
-        return cls
-
-    @classmethod
-    def add_gui_containers(cls, **gui_containers):
-        """ Add GUI item container """
-        for name, container in gui_containers.items():
-            cls.add_single_gui_container(name, container)
-        return cls
-
-    @classmethod
-    def add_single_gui_container(cls, name, container):
-        """ Add GUI item container """
-        gui_refs.add(name, container)
+    def add_agent(cls, name, item_class):
+        """ Add GUI agent """
+        container = containers.GUIItemContainer(item_class)
         cls.gui_agents[name] = agents.GUIAgent(container)
-        cls.add_worker_agents(name)
-        return cls
-
-    @classmethod
-    def add_worker_agents(cls, *worker_agents):
-        """ Add worker agents """
-        for agent in worker_agents:
-            cls.worker_agents.append(agent)
-        return cls
+        gui_refs.add(name, container)
+        cls.worker_agents.append(name)
 
     def __init__(self, worker, *args, **kwargs):
         super().__init__(kwargs.pop('parent', None))

@@ -11,7 +11,7 @@ class FigureWorkerException(Exception):
 
 # Setup GUI side
 GUIAgency = controllers.GUIAgency
-GUIAgency.add_gui_items(figure=window.FigureWindow)
+GUIAgency.add_agent('figure', window.FigureWindow)
 
 
 # Setup worker side
