@@ -9,7 +9,7 @@ class FigureWindowException(Exception):
 
 
 class FigureWindow(QtWidgets.QMainWindow):
-    """ Figure """
+    """ Figure window """
 
     def __init__(self, index, **kwargs):
         super().__init__(parent=kwargs.pop('parent', None))
@@ -46,6 +46,22 @@ class FigureWindow(QtWidgets.QMainWindow):
     def raise_exception(self):
         """ Method to raise custom exception for testing purposes """
         raise FigureWindowException('Custom exception')
+
+    def delete(self):
+        """ Closes the window """
+        self.close()
+
+
+class GraphWindow(QtWidgets.QMainWindow):
+    """ Graph window """
+    def __init__(self, index, **kwargs):
+        super().__init__(parent=kwargs.pop('parent', None))
+        self.index = index
+        self.show()
+
+    def test_method(self):
+        """ Method solely for testing purposes """
+        return 'Test successful'
 
     def delete(self):
         """ Closes the window """
