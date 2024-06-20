@@ -17,7 +17,7 @@ GUIAgency.add_agent('figure', window.FigureWindow)
 # Setup worker side
 class FigureWorker(containers.WorkerItem):
     """ Worker thread figure to control FigureWindow on the GUI thread"""
-    factory = containers.WorkerItem.factory
+    factory = containers.WorkerItem.factoryClass()
     raise_window = factory.method()
     change_title = factory.method()
     title = factory.attribute()

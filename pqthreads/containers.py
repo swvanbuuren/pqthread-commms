@@ -78,7 +78,8 @@ class GUIItemContainer(QtCore.QObject):
 class WorkerItem:
     """ Abstract Worker Item class """
     agent = None
-    factory = descriptors.DescriptorFactory()
+    factoryClass = descriptors.DescriptorFactory
+    factory = None
 
     @classmethod
     def with_agent(cls, agent):
