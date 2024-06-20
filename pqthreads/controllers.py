@@ -106,7 +106,7 @@ class GUIAgency(QtCore.QObject):
     def add_agent(cls, name, item_class):
         """ Add GUI agent """
         container = containers.GUIItemContainer(item_class)
-        cls.gui_agents[name] = agents.GUIAgent(container)
+        cls.gui_agents[name] = agents.GUIAgent(name, container)
         gui_refs.add(name, container)
         cls.worker_agents.append(name)
 

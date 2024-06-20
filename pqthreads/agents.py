@@ -114,8 +114,9 @@ class GUIAgent(QtCore.QObject):
     signal = QtCore.Signal(object)
     error = QtCore.Signal()
 
-    def __init__(self, container, parent=None):
+    def __init__(self, name, container, parent=None):
         super().__init__(parent)
+        self.name = name
         self.container = container
         self.create = container.create
         self.modify =  container.modify
