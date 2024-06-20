@@ -94,3 +94,20 @@ def test_multiple_figure_closure():
         main()
     except IndexError:
         pytest.fail("Unexpected IndexError")
+
+
+def test_multiple_agent_types():
+    """ Test functionality of multiple agent types """
+
+    @worker.decorator
+    def main():
+        """ Helper function """
+        fig = worker.figure()
+        graph = worker.graph()
+        result = graph.test_method()
+        fig.close()
+        graph.close()
+        return result
+
+    result = main()
+    assert result == 'Test successful'
