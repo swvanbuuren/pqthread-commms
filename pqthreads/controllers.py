@@ -44,11 +44,11 @@ class WorkerAgency(QtCore.QObject):
     """ Owns all worker agents """
     stopSignalwait = QtCore.Signal()
     workerErrorSignal = QtCore.Signal()
-    worker_containers = {}
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop('parent', None))
         self.worker_agents = {}
+        self.worker_containers = {}
         if worker_agents := kwargs.get('agents'):
             for name, agent in worker_agents.items():
                 self.worker_agents[name] = agent
@@ -64,9 +64,11 @@ class WorkerAgency(QtCore.QObject):
 
     def add_container(self, name, item_class: containers.WorkerItem):
         """ Adds a new container, including a module wide weak reference """
-        item_class = item_class.with_agent(self.agent(name))
-        self.worker_containers[name] = containers.WorkerItemContainer(item_class=item_class)
-        worker_refs.add(name, self.worker_containers[name])
+        agent = self.agent(name)
+        item_class = item_class.with_agent(agent)
+        container = containers.WorkerItemContainer(item_class=item_class)
+        self.worker_containers[name] = container
+        worker_refs.add(name, container)
 
 
 class FunctionWorker(QtCore.QObject):
