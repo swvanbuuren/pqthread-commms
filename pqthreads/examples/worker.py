@@ -18,7 +18,7 @@ GUIAgency.add_agent('graph', window.GraphWindow)
 # Setup worker side
 class FigureWorker(containers.WorkerItem):
     """ Worker thread figure to control FigureWindow on the GUI thread"""
-    factory = containers.WorkerItem.factoryClass()
+    factory = containers.WorkerItem.get_factory()
     raise_window = factory.method()
     change_title = factory.method()
     title = factory.attribute()
@@ -31,7 +31,7 @@ class FigureWorker(containers.WorkerItem):
 
 class GraphWorker(containers.WorkerItem):
     """ Worker thread graph to control GraphWindow on the GUI thread"""
-    factory = containers.WorkerItem.factoryClass()
+    factory = containers.WorkerItem.get_factory()
     test_method = factory.method()
 
 
