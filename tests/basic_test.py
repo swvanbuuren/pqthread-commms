@@ -5,6 +5,16 @@ from pqthreads.examples import window
 from pqthreads.examples import worker
 
 
+def test_empty():
+    """ Standard test with any used functionalities, should end without errors """
+
+    @worker.decorator
+    def main():
+        """ Helper function """
+
+    main()
+
+
 def test_basic():
     """ Basic functionality check, should not raise any errors """
 
