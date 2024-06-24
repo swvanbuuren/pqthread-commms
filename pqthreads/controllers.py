@@ -173,3 +173,10 @@ class GUIAgency(QtCore.QObject):
         self.result = self.worker.get_result()
         self.thread.quit()
         self.thread.wait()
+        self.exit_windowless_application()
+
+    @QtCore.Slot()
+    def exit_windowless_application(self):
+        """ Exit the application if now windows are open """
+        if not self.application.topLevelWidgets():
+            self.application.exit()
