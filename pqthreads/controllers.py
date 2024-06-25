@@ -161,10 +161,11 @@ class GUIAgency(QtCore.QObject):
         try:
             sys.excepthook = self.excepthook
             utils.compat_exec(self.application)
+        finally:
+            self.wait_for_thread()
             if self.raised_exception:
                 exc_type, exc_value, exc_tb = self.raised_exception
                 raise exc_type(exc_value).with_traceback(exc_tb)
-        finally:
             self.application.exit()
 
     @QtCore.Slot()
@@ -180,3 +181,13 @@ class GUIAgency(QtCore.QObject):
         """ Exit the application if now windows are open """
         if not self.application.topLevelWidgets():
             self.application.exit()
+
+    def wait_for_thread(self):
+        """ Wait for the worker thread to finish """
+        while True:
+            try:
+                if not self.thread.isRunning():
+                    break
+            except RuntimeError:
+                break
+            self.application.processEvents()
