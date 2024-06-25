@@ -1,6 +1,5 @@
 """ Utility module """
 
-from contextlib import contextmanager
 from pqthreads.qt import PySide
 from pqthreads.qt import QtCore
 
@@ -13,14 +12,23 @@ def compat_exec(obj):
         obj.exec()
 
 
-@contextmanager
-def wait_signal(signal, error_signal=None, timeout=1000):
-    """Block loop until signal emitted, or timeout (ms) elapses."""
-    loop = QtCore.QEventLoop()
-    signal.connect(loop.quit)
-    if error_signal is not None:
-        error_signal.connect(loop.quit)
-    yield
-    if timeout is not None:
-        QtCore.QTimer.singleShot(timeout, loop.quit)
-    compat_exec(loop)
+class SignalWaiter(QtCore.QObject):
+    """ Context manager that blocks loop until signal emitted, or timeout (ms)
+    elapses. """
+    def __init__(self, signal, error_signal=None, timeout=1000, parent=None):
+        super().__init__(parent=parent)
+        self.signal = signal
+        self.error_signal = error_signal
+        self.timeout = timeout
+        self.loop = None
+
+    def __enter__(self):
+        self.loop = QtCore.QEventLoop(parent=self)
+        self.signal.connect(self.loop.quit)
+        if self.error_signal is not None:
+            self.error_signal.connect(self.loop.quit)
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        if self.timeout is not None:
+            QtCore.QTimer.singleShot(self.timeout, self.loop.quit)
+        compat_exec(self.loop)
