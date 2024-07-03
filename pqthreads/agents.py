@@ -31,10 +31,10 @@ class WorkerAgent(QtCore.QObject):
     deleteSignal = QtCore.Signal(int)
     dataRecevied = QtCore.Signal()
     stopSignalwait = QtCore.Signal()
+    no_message = object()
 
     def __init__(self, name, parent=None):
         super().__init__(parent)
-        self.no_message = object()
         self.error = False
         self.message = self.no_message
         self.name = name
@@ -86,9 +86,6 @@ class WorkerAgent(QtCore.QObject):
         if self.message is self.no_message:
             if self.error:
                 return self.message
-                # we don't raise this error anymore, since it's caught in the
-                # GUIAgency
-                # raise GUIAgentException('Error detected at gui_agent side')
             if not self.error:
                 raise WorkerAgentException('No message received')
         message = copy(self.message)
@@ -101,6 +98,7 @@ class WorkerAgent(QtCore.QObject):
         self.message = data
         self.dataRecevied.emit()
 
+    @QtCore.Slot(object)
     def error_detected(self):
         """ If a gui_agent error is detected ... """
         self.error = True
