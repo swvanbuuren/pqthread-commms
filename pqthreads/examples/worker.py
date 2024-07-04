@@ -46,7 +46,7 @@ def figure(*args, **kwargs):
 
 
 def graph(*args, **kwargs):
-    """ Create, raise or modify FigureWorker objects """
+    """ Create, raise or modify GraphWorker objects """
     container = controllers.worker_refs.get('graph')
     if not args:
         return container.create(**kwargs)
