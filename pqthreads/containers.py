@@ -38,6 +38,13 @@ class GUIItemContainer(QtCore.QObject):
         """ Returns the last item """
         return self.items[-1]
 
+    def get_item(self, index):
+        """ Returns the item at index """
+        try:
+            return self.items[index]
+        except IndexError as err:
+            raise ItemException(f'Index not find for {self.item_class} items') from err
+
     def create(self, args, kwargs):
         """ Creates a new item instance with user-supplied item class """
         index = self.count
@@ -48,21 +55,18 @@ class GUIItemContainer(QtCore.QObject):
 
     def request(self, index, args):
         """ Returns values of item attributes """
-        item = self.items[index]
+        item = self.get_item(index)
         return [getattr(item, arg) for arg in args]
 
     def modify(self, index, kwargs):
         """ Modifies item's attributes"""
-        item = self.items[index]
+        item = self.get_item(index)
         for key, value in kwargs.items():
             setattr(item, key, value)
 
     def method(self, index, func_name, args, kwargs):
         """ Execute method on item """
-        try:
-            item = self.items[index]
-        except IndexError as err:
-            raise ItemException(f'Index not find for {self.item_class} items') from err
+        item = self.get_item(index)
         func = getattr(item, func_name)
         return func(*args, **kwargs)
 
