@@ -77,6 +77,15 @@ class GUIItemContainer(QtCore.QObject):
         item = self.items.pop(remove_index)
         item.delete()
 
+    def __del__(self):
+        """ Make sure all items are deleted """
+        for item in self.items:
+            if item:
+                try:
+                    item.deleteLater()
+                except RuntimeError:
+                    pass
+
 
 class WorkerItem:
     """ Abstract Worker Item class """
