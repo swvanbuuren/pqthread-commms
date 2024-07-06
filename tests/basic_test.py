@@ -96,8 +96,8 @@ def test_multiple_figure_closure():
         fig3 = worker.figure()
         fig4 = worker.figure()
         fig1.close()
-        fig3.close()
         fig2.close()
+        fig3.close()
         fig4.close()
 
     try:
