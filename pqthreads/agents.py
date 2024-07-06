@@ -116,7 +116,6 @@ class GUIAgent(QtCore.QObject):
     def __init__(self, name, container, parent=None):
         super().__init__(parent)
         self.name = name
-        self.container = container
         self.create = container.create
         self.modify =  container.modify
         self.request = container.request

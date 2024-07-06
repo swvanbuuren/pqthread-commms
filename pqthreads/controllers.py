@@ -102,14 +102,15 @@ class FunctionWorker(QtCore.QObject):
 class GUIAgency(QtCore.QObject):
     """ Controller class which coordinates all figure and axis objects """
     gui_agents = {}
+    gui_containers = {}
     worker_agents = []
 
     @classmethod
     def add_agent(cls, name, item_class):
         """ Add GUI agent """
-        container = containers.GUIItemContainer(item_class)
-        cls.gui_agents[name] = agents.GUIAgent(name, container)
-        gui_refs.add(name, container)
+        cls.gui_containers[name] = containers.GUIItemContainer(item_class)
+        cls.gui_agents[name] = agents.GUIAgent(name, cls.gui_containers[name])
+        gui_refs.add(name, cls.gui_containers[name])
         cls.worker_agents.append(name)
 
     def __init__(self, worker, *args, **kwargs):
