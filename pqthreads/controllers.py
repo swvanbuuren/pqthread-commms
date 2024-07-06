@@ -99,7 +99,7 @@ class FunctionWorker(QtCore.QObject):
         return self.result
 
 
-class GUIAgency(QtCore.QObject):
+class GUIAgency(QtCore.QObject): # pylint: disable=too-many-instance-attributes
     """ Controller class which coordinates all figure and axis objects """
     gui_agents_classes = {}
     worker_agents = []
