@@ -47,8 +47,6 @@ class WorkerAgent(QtCore.QObject):
 
     def connect_agent(self, gui_agent):
         """ Connects the sender to a gui_agent """
-        gui_agent.signal.connect(self.slot)
-        gui_agent.error.connect(self.error_detected)
         self.createSignal.connect(gui_agent.create_slot)
         self.modifySignal.connect(gui_agent.modify_slot)
         self.requestSignal.connect(gui_agent.request_slot)
@@ -127,6 +125,11 @@ class GUIAgent(QtCore.QObject):
 
     def __repr__(self):
         return f'{self.__class__.__name__}(name={self.name})'
+
+    def connect_agent(self, worker_agent):
+        """ Connects the sender to a worker_agent """
+        self.signal.connect(worker_agent.slot)
+        self.error.connect(worker_agent.error_detected)
 
     @contextmanager
     def register_exception(self):

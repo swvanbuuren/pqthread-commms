@@ -144,6 +144,7 @@ class GUIAgency(QtCore.QObject):
         # connect agents
         for name, agent in self.gui_agents.items():
             self.worker_agency.agent(name).connect_agent(agent)
+            agent.connect_agent(self.worker_agency.agent(name))
         self.worker_agency.workerErrorSignal.connect(self.application.closeAllWindows)
         # connect other signals/slots
         self.thread.started.connect(self.worker.run)
