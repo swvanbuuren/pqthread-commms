@@ -61,7 +61,9 @@ class WorkerAgent(QtCore.QObject):
 
     def modify(self, index, **kwargs):
         """ Send out a one-way signal with given arguments and keyword arguments """
-        self.modifySignal.emit(index, kwargs)
+        with self.signal_waiter:
+            self.modifySignal.emit(index, kwargs)
+        self.read_message()
 
     def request(self, index, *args):
         """ Obtain data from gui_agent"""
@@ -77,7 +79,9 @@ class WorkerAgent(QtCore.QObject):
 
     def delete(self, index):
         """ Send out a signal to delete object at index on the gui_agent class """
-        self.deleteSignal.emit(index)
+        with self.signal_waiter:
+            self.deleteSignal.emit(index)
+        self.read_message()
 
     def read_message(self):
         """ Helper method, that reads message set by slot and returns a copy """
@@ -149,7 +153,9 @@ class GUIAgent(QtCore.QObject):
     @QtCore.Slot(int, dict)
     def modify_slot(self, index, kwargs):
         """ Slot for modifying an instance attribute """
-        self.modify(index, kwargs)
+        with self.register_exception():
+            self.modify(index, kwargs)
+            self.signal.emit(True)
 
     @QtCore.Slot(int, list)
     def request_slot(self, index, args):
@@ -168,3 +174,4 @@ class GUIAgent(QtCore.QObject):
         """ Slot for closing/deleting a class instance object at index """
         with self.register_exception():
             self.delete(index)
+            self.signal.emit(True)
