@@ -101,27 +101,27 @@ class FunctionWorker(QtCore.QObject):
 
 class GUIAgency(QtCore.QObject):
     """ Controller class which coordinates all figure and axis objects """
-    gui_agents = {}
-    gui_containers = {}
+    gui_agents_classes = {}
     worker_agents = []
 
     @classmethod
     def add_agent(cls, name, item_class):
         """ Add GUI agent """
-        cls.gui_containers[name] = containers.GUIItemContainer(item_class)
-        cls.gui_agents[name] = agents.GUIAgent(name, cls.gui_containers[name])
-        gui_refs.add(name, cls.gui_containers[name])
+        cls.gui_agents_classes[name] = item_class
         cls.worker_agents.append(name)
 
     def __init__(self, worker, *args, **kwargs):
         super().__init__(kwargs.pop('parent', None))
         self.application = self.get_application()
+        self.gui_agents = {}
+        self.gui_containers = {}
         self.result = None
         self.exception_raised = False
         self.raised_exception = None
         self.thread = QtCore.QThread(parent=self)
         self.worker_agency = WorkerAgency()
         self.worker = FunctionWorker(worker, self.worker_agency, *args, **kwargs)
+        self.setup_agents()
         self.setup_worker()
 
     def kickoff(self):
@@ -134,6 +134,13 @@ class GUIAgency(QtCore.QObject):
         if not QtWidgets.QApplication.instance():
             return QtWidgets.QApplication(sys.argv)
         return QtWidgets.QApplication.instance()
+
+    def setup_agents(self):
+        """ Setup GUI agents """
+        for name, item_class in self.gui_agents_classes.items():
+            self.gui_containers[name] = containers.GUIItemContainer(item_class, parent=self)
+            self.gui_agents[name] = agents.GUIAgent(name, self.gui_containers[name], parent=self)
+            gui_refs.add(name, self.gui_containers[name])
 
     def setup_worker(self):
         """ Setup worker thread """
