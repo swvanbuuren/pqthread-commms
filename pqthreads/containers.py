@@ -76,7 +76,6 @@ class GUIItemContainer(QtCore.QObject):
         del self.indices[remove_index]
         item = self.items.pop(remove_index)
         item.delete()
-        del item
 
 
 class WorkerItem:
@@ -147,4 +146,3 @@ class WorkerItemContainer:
         index = self.items.index(item)
         worker_item = self.items.pop(index)
         worker_item.close()
-        del worker_item
