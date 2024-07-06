@@ -62,6 +62,6 @@ def decorator(func):
         gui_agency = GUIAgency(worker=func)
         gui_agency.worker_agency.add_container('figure', FigureWorker)
         gui_agency.worker_agency.add_container('graph', GraphWorker)
-        gui_agency.kickoff()
+        gui_agency.execute()
         return gui_agency.result
     return wrapper

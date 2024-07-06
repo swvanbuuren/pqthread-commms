@@ -123,10 +123,6 @@ class GUIAgency(QtCore.QObject):
         self.setup_agents()
         self.setup_worker()
 
-    def kickoff(self):
-        """ Kick off the worker thread """
-        self.execute()
-
     @staticmethod
     def get_application():
         """ Returns the QApplication instance """
