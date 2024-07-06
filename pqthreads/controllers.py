@@ -116,7 +116,6 @@ class GUIAgency(QtCore.QObject):
         self.gui_agents = {}
         self.gui_containers = {}
         self.result = None
-        self.exception_raised = False
         self.raised_exception = None
         self.thread = QtCore.QThread(parent=self)
         self.worker_agency = WorkerAgency()
