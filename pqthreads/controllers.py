@@ -35,6 +35,10 @@ class WeakReferences:
             raise MissingReferenceError(f'No weak reference set to {name}')
         return ref
 
+    def clear(self):
+        """ Clears all weak references """
+        self.refs = {}
+
 
 worker_refs = WeakReferences()
 gui_refs = WeakReferences()

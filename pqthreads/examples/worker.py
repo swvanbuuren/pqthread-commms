@@ -63,5 +63,7 @@ def decorator(func):
         gui_agency.worker_agency.add_container('figure', FigureWorker)
         gui_agency.worker_agency.add_container('graph', GraphWorker)
         gui_agency.execute()
+        controllers.gui_refs.clear()
+        controllers.worker_refs.clear()
         return gui_agency.result
     return wrapper
