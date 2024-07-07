@@ -46,7 +46,6 @@ gui_refs = WeakReferences()
 
 class WorkerAgency(QtCore.QObject):
     """ Owns all worker agents """
-    stopSignalwait = QtCore.Signal()
     workerErrorSignal = QtCore.Signal()
 
     def __init__(self, **kwargs):
@@ -60,7 +59,6 @@ class WorkerAgency(QtCore.QObject):
     def add_agent(self, name):
         """ Adds a new sender """
         self.worker_agents[name] = agents.WorkerAgent(name, parent=self)
-        self.stopSignalwait.connect(self.worker_agents[name].stopSignalwait.emit)
 
     def agent(self, name):
         """ Returns the worker agent """
@@ -73,6 +71,11 @@ class WorkerAgency(QtCore.QObject):
         container = containers.WorkerItemContainer(item_class=item_class)
         self.worker_containers[name] = container
         worker_refs.add(name, container)
+
+    def stop_signal_wait(self):
+        """ Stop signal wait """
+        for agent in self.worker_agents.values():
+            agent.stopSignalwait.emit()
 
 
 class FunctionWorker(QtCore.QObject):
@@ -161,7 +164,7 @@ class GUIAgency(QtCore.QObject): # pylint: disable=too-many-instance-attributes
         """ Catch any exception and print it """
         self.raised_exception = (exc_type, exc_value, exc_tb)
         sys.__excepthook__(exc_type, exc_value, exc_tb)
-        self.worker_agency.stopSignalwait.emit()
+        self.worker_agency.stop_signal_wait()
 
     def execute(self):
         """ Create QApplication, start worker thread and the main event loop """
