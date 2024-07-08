@@ -46,7 +46,7 @@ gui_refs = WeakReferences()
 
 class WorkerAgency(QtCore.QObject):
     """ Owns all worker agents """
-    workerErrorSignal = QtCore.Signal()
+    workerErrorSignal = QtCore.Signal(tuple)
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop('parent', None))
@@ -55,6 +55,7 @@ class WorkerAgency(QtCore.QObject):
         if worker_agents := kwargs.get('agents'):
             for name, agent in worker_agents.items():
                 self.worker_agents[name] = agent
+        self.raised_exception = None
 
     def add_agent(self, name):
         """ Adds a new sender """
@@ -95,9 +96,9 @@ class FunctionWorker(QtCore.QObject):
         """ Run the function with exception handling """
         try:
             self.result = self.function(*self.args, **self.kwargs)
-        except BaseException: # pylint: disable=broad-except
-            self.agency.workerErrorSignal.emit()
-            raise
+        except BaseException as err: # pylint: disable=broad-except
+            raised_exception = (type(err), err, err.__traceback__)
+            self.agency.workerErrorSignal.emit(raised_exception)
         finally:
             self.finished.emit()
 
@@ -155,7 +156,7 @@ class GUIAgency(QtCore.QObject): # pylint: disable=too-many-instance-attributes
         for name, agent in self.gui_agents.items():
             self.worker_agency.agent(name).connect_agent(agent)
             agent.connect_agent(self.worker_agency.agent(name))
-        self.worker_agency.workerErrorSignal.connect(self.application.closeAllWindows)
+        self.worker_agency.workerErrorSignal.connect(self.worker_exception_raised)
         # connect other signals/slots
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.stop_thread)
@@ -202,3 +203,11 @@ class GUIAgency(QtCore.QObject): # pylint: disable=too-many-instance-attributes
             except RuntimeError:
                 break
             self.application.processEvents()
+
+    @QtCore.Slot()
+    def worker_exception_raised(self, worker_exception):
+        """ Make sure the GUI threads stops, by closing all open windows and
+        register the caught exception """
+        self.application.closeAllWindows()
+        self.raised_exception = worker_exception
+        sys.__excepthook__(*worker_exception)
