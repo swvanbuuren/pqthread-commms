@@ -16,14 +16,14 @@ The following schematic depicts this design.
 ![Pqthreads design](doc/design.svg)
 
 Communication between the GUI and worker threads is solely done using
-Signal/Slot connections. This is faciliated by the GUI- and WorkerAgents.
+Signal/Slot connections. This is facilitated by the GUI- and WorkerAgents.
 
 The interface of a GUI Object is exposed by means of a Worker Object in the
 Worker Thread.
 
-It is possible expose the interface of mutiple types of GUI Objects (in the
-shwon schematic `FigureWindow` and `GraphWindow`), which requires multiple
-`Worker`- and `GUIAgent`s. These are helds the `GUIAgency` and `WorkerAgency`
+It is possible expose the interface of multiple types of GUI Objects (in the
+shown schematic `FigureWindow` and `GraphWindow`), which requires multiple
+`Worker`- and `GUIAgent`s. These are held the `GUIAgency` and `WorkerAgency`
 respectively.
 
 For each type of GUI/Worker object pair, it's also possible to instantiate
