@@ -16,7 +16,8 @@ The following schematic depicts this design.
 ![Pqthreads design](doc/design.svg)
 
 Communication between the GUI and worker threads is solely done using
-Signal/Slot connections. This is facilitated by the GUI- and WorkerAgents.
+Signal/Slot connections. This is facilitated by the `GUIAgent`s and
+`WorkerAgent`s.
 
 The interface of a GUI Object is exposed by means of a Worker Object in the
 Worker Thread.
