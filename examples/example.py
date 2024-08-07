@@ -4,7 +4,7 @@ import time
 from pqthreads.examples import worker
 
 
-@worker.decorator
+@worker.decorator_example
 def main():
     """ Test function """
 

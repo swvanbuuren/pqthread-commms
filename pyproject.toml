@@ -23,7 +23,8 @@ classifiers = [
 ]
 urls = { Homepage = "https://github.com/swvanbuuren/pqthreads" }
 dependencies = [
-    "PySide6"
+    "PySide6",
+    "wrapt",
 ]
 
 [tool.setuptools.packages.find]

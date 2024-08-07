@@ -3,16 +3,11 @@
 from pqthreads.examples import window
 from pqthreads import controllers
 from pqthreads import containers
+from pqthreads import decorator
 
 
 class FigureWorkerException(Exception):
     """ Exception for FigureWorker """
-
-
-# Setup GUI side
-GUIAgency = controllers.GUIAgency
-GUIAgency.add_agent('figure', window.FigureWindow)
-GUIAgency.add_agent('graph', window.GraphWindow)
 
 
 # Setup worker side
@@ -54,16 +49,19 @@ def graph(*args, **kwargs):
     container.current = graph_worker
     return graph_worker
 
+# Configure decorators
+class DecoratorCore(decorator.BaseDecoratorCore):
+    """ Helper class for decorator definition """
 
-def decorator(func):
-    """ Decorator for end user functions, adding figure functionality"""
-    def wrapper():
-        """ Wrapper """
-        gui_agency = GUIAgency(worker=func)
-        gui_agency.worker_agency.add_container('figure', FigureWorker)
-        gui_agency.worker_agency.add_container('graph', GraphWorker)
-        gui_agency.execute()
-        controllers.gui_refs.clear()
-        controllers.worker_refs.clear()
-        return gui_agency.result
-    return wrapper
+    def add_gui_agents(self, gui_agency_class):
+        """ Add GUI agents """
+        gui_agency_class.add_agent('figure', window.FigureWindow)
+        gui_agency_class.add_agent('graph', window.GraphWindow)
+
+    def add_worker_agents(self, work_agency):
+        """ Add worker agents """
+        work_agency.add_container('figure', FigureWorker)
+        work_agency.add_container('graph', GraphWorker)
+
+
+decorator_example = decorator.Decorator(DecoratorCore)

@@ -8,7 +8,7 @@ from pqthreads.examples import worker
 def test_empty():
     """ Standard test with any used functionalities, should end without errors """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
 
@@ -18,7 +18,7 @@ def test_empty():
 def test_basic():
     """ Basic functionality check, should not raise any errors """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig = worker.figure()
@@ -30,7 +30,7 @@ def test_basic():
 def test_method():
     """ Test return value of method call from the worker thread """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig = worker.figure()
@@ -44,7 +44,7 @@ def test_method():
 def test_attribute():
     """ Test attribute property """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig = worker.figure()
@@ -60,7 +60,7 @@ def test_attribute():
 def test_gui_exception():
     """ Test exception in GUI thread """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig = worker.figure()
@@ -74,7 +74,7 @@ def test_gui_exception():
 def test_worker_exception():
     """ Test exception in worker thread """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig = worker.figure()
@@ -88,7 +88,7 @@ def test_worker_exception():
 def test_multiple_figure_closure():
     """ Test closure of multiple figures """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig1 = worker.figure()
@@ -109,7 +109,7 @@ def test_multiple_figure_closure():
 def test_multiple_agent_types():
     """ Test functionality of multiple agent types """
 
-    @worker.decorator
+    @worker.decorator_example
     def main():
         """ Helper function """
         fig = worker.figure()
