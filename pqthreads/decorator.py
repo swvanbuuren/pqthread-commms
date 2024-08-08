@@ -10,6 +10,7 @@ class BaseDecoratorCore:
 
     def __init__(self, **dec_kwargs):
         """ Reimplement this to make use of decorator's keyword arguments """
+        self.dec_kwargs = dec_kwargs
         self.gui_agency_class = controllers.GUIAgency
         self.add_gui_agents(self.gui_agency_class)
 
@@ -35,7 +36,7 @@ class BaseDecoratorCore:
         raise NotImplementedError('This method must be implemented')
 
 
-class Decorator:
+class Decorator: # pylint: disable=too-few-public-methods
     """ Helper class for decorator definition """
 
     def __init__(self, decorator_class: BaseDecoratorCore):
