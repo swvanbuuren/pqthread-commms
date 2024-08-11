@@ -49,19 +49,9 @@ def graph(*args, **kwargs):
     container.current = graph_worker
     return graph_worker
 
+
 # Configure decorators
-class DecoratorCore(decorator.BaseDecoratorCore):
-    """ Helper class for decorator definition """
-
-    def add_gui_agents(self, gui_agency_class):
-        """ Add GUI agents """
-        gui_agency_class.add_agent('figure', window.FigureWindow)
-        gui_agency_class.add_agent('graph', window.GraphWindow)
-
-    def add_worker_agents(self, work_agency):
-        """ Add worker agents """
-        work_agency.add_container('figure', FigureWorker)
-        work_agency.add_container('graph', GraphWorker)
-
-
+DecoratorCore = decorator.DecoratorCore
+DecoratorCore.add_agent('figure', window.FigureWindow, FigureWorker)
+DecoratorCore.add_agent('graph', window.GraphWindow, GraphWorker)
 decorator_example = decorator.Decorator(DecoratorCore)

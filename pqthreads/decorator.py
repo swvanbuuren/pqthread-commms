@@ -5,8 +5,18 @@ import wrapt
 from pqthreads import controllers
 
 
-class BaseDecoratorCore:
+class DecoratorCore:
     """ Helper class for decorator definition """
+    gui_agents = {}
+    worker_agents = {}
+
+    @classmethod
+    def add_agent(cls, name, gui_class, worker_class):
+        """ Add GUI agent classes """
+        if name in cls.gui_agents or name in cls.worker_agents:
+            raise ValueError(f'Duplicate agent name: {name}')
+        cls.gui_agents[name] = gui_class
+        cls.worker_agents[name] = worker_class
 
     def __init__(self, **dec_kwargs):
         """ Reimplement this to make use of decorator's keyword arguments """
@@ -29,17 +39,19 @@ class BaseDecoratorCore:
 
     def add_gui_agents(self, gui_agency_class):
         """ Add GUI agents """
-        raise NotImplementedError('This method must be implemented')
+        for name, gui_class in self.gui_agents.items():
+            gui_agency_class.add_agent(name, gui_class)
 
     def add_worker_agents(self, work_agency):
         """ Add worker agents """
-        raise NotImplementedError('This method must be implemented')
+        for name, worker_class in self.worker_agents.items():
+            work_agency.add_container(name, worker_class)
 
 
 class Decorator: # pylint: disable=too-few-public-methods
     """ Helper class for decorator definition """
 
-    def __init__(self, decorator_class: BaseDecoratorCore):
+    def __init__(self, decorator_class: DecoratorCore):
         self.decorator_class = decorator_class
 
     def __call__(self, wrapped, **kwargs):
