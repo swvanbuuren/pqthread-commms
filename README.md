@@ -4,6 +4,56 @@ Pqthreads exposes class interfaces from the main GUI Thread in another
 QThread in Qt for Python. In doing so, it facilitates communication between the
 main (GUI) thread and a dedicated `QThread`s as offered by [Qt for Python (PySide)](https://wiki.qt.io/Qt_for_Python).
 
+## Usage
+
+In order to use pqhreads, you'll first need a GUI implementation (with Qt for
+Python) whose interface you'd like to expose. This usually would be a class that derives from e.g.
+[QMainWindow](https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QMainWindow.html). A very basic example class called `FigureWindow` can be found in [window.py](pqthreads/examples/window.py).
+
+Using a class that inherites from [containers.WorkerItem](pqthreads/containers.py) you then choose which methods and attributes are exposed. An examples of this would be the class `FigureWorker` in [worker.py](pqthreads/examples/worker.py).
+
+Using the GUI implementation `FigureWindow` and worker threads exposure class
+`FigureWorker` the utilities from [decorator.py](pqthreads/decorator.py) can be
+used to create a custom decorator:
+
+```python
+from pqthreads import decorator
+
+DecoratorCore = decorator.DecoratorCore
+DecoratorCore.add_agent('figure', window.FigureWindow, FigureWorker)
+decorator_example = decorator.Decorator(DecoratorCore)
+``` 
+
+Any decorated function now runs in the worker thread, while all GUI elements run
+in the (main) GUI thread.
+
+To simplify access to worker class interfaces, a helper function is useful. This
+also illustrates how to create and access new GUI elements:
+
+```python
+from pqthreads import decorator
+
+def figure(*args, **kwargs):
+    """ Create, raise or modify FigureWorker objects """
+    container = controllers.worker_refs.get('figure')
+    if not args:
+        return container.create(**kwargs)
+    figure_worker = args[0]
+    container.current = figure_worker
+    return figure_worker
+```
+
+This can finally be used to to expose GUI implementation in an existing python
+program that will run in another worker thread.
+
+```
+@decorator_example
+def main():
+    fig = worker.figure(title='Initial title')
+    fig.change_title(title='Another title')
+    fig.close()
+```
+
 ## Design
 
 Pqthreads separates the GUI elements from all programming elements in
