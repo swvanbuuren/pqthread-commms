@@ -54,6 +54,17 @@ def main():
     fig.close()
 ```
 
+## Pittfalls
+
+As illustrated in the previous section worker class interfaces are accessed
+through the so-called `worker_refs`, which is provided in the module [`controllers`](pqthreads/controllers.py). All interfaces are provided as weak references. As soon as the decorated function is exited, the weak references will invalidate! Therefore, it's recommended to decorate the function that encompases the whole python program in question.
+
+The module [`controllers`](pqthreads/controllers.py) also comes with an object
+called ``gui_refs` that stores weak references to the GUI objects. These also will invalidate when the decorated function is left.
+
+Finally, one should not access the `worker_refs` from the (main) GUI thread and also not access `gui_refs` from the worker thread. This can lead to trace errors and all sorts of undefined behavior. You have been warned!
+
+
 ## Design
 
 Pqthreads separates the GUI elements from all programming elements in
