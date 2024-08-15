@@ -1,7 +1,7 @@
 """ Module with end user functions """
 
 from pqthreads.examples import window
-from pqthreads import controllers
+from pqthreads import refs
 from pqthreads import containers
 from pqthreads import decorator
 
@@ -32,7 +32,7 @@ class GraphWorker(containers.WorkerItem):
 
 def figure(*args, **kwargs):
     """ Create, raise or modify FigureWorker objects """
-    container = controllers.worker_refs.get('figure')
+    container = refs.worker.get('figure')
     if not args:
         return container.create(**kwargs)
     figure_worker = args[0]
@@ -42,7 +42,7 @@ def figure(*args, **kwargs):
 
 def graph(*args, **kwargs):
     """ Create, raise or modify GraphWorker objects """
-    container = controllers.worker_refs.get('graph')
+    container = refs.worker.get('graph')
     if not args:
         return container.create(**kwargs)
     graph_worker = args[0]

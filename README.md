@@ -55,11 +55,11 @@ To simplify access to worker class interfaces, a helper function is useful. This
 also illustrates how to create and access new GUI elements:
 
 ```python
-from pqthreads import controllers
+from pqthreads import refs
 
 def figure(*args, **kwargs):
     """ Create, raise or modify FigureWorker objects """
-    container = controllers.worker_refs.get('figure')
+    container = refs.worker.get('figure')
     if not args:
         return container.create(**kwargs)
     figure_worker = args[0]
@@ -83,18 +83,21 @@ def main():
 ## Pittfalls
 
 As illustrated in the previous section, worker class interfaces are accessed
-through the so-called `worker_refs` (as is provided in the module
-[`controllers`](pqthreads/controllers.py)). All interfaces are provided as weak
-references. As soon as the decorated function is exited, the weak references
-will invalidate and can't be used anymore. Therefore, it's recommended to
-decorate the function that encapsulates the whole python program in question.
-This assures that different parts of your own program run in different threads.
+through the so-called `worker` references (as is provided in the module
+[`refs`](pqthreads/refs.py)). All interfaces are provided as weak references. As
+soon as the decorated function is exited, the weak references will invalidate
+and can't be used anymore. Therefore, it's recommended to decorate the function
+that encapsulates the whole python program in question. This assures that
+different parts of your own program run in different threads.
 
-The module [`controllers`](pqthreads/controllers.py) also comes with an object
-called `gui_refs` that stores weak references to the GUI objects. These also
-will invalidate when the decorated function is exited.
+The module [`refs`](pqthreads/refs.py) also comes with an object called `gui`
+references that stores weak references to the GUI objects. These also will
+invalidate when the decorated function is exited.
 
-Finally, one should not access the `worker_refs` from the (main) GUI thread and also not access `gui_refs` from the worker thread. This can lead to trace errors and all sorts of undefined behavior. **You have been warned!**
+Finally, one should not access the `worker` references from the (main) GUI
+thread and also not access `gui` references from the worker thread. This can
+lead to trace errors and all sorts of undefined behavior. **You have been
+warned!**
 
 ## Design
 

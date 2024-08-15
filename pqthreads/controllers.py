@@ -5,43 +5,11 @@ worker thread and the GUI thread.
 """
 
 import sys
-import weakref
 from pqthreads.qt import QtCore, QtWidgets
 from pqthreads import agents
 from pqthreads import utils
 from pqthreads import containers
-
-
-class MissingReferenceError(Exception):
-    """ Exception for missing references """
-
-
-class WeakReferences:
-    """ Class for holding weak references """
-    def __init__(self):
-        self.refs = {}
-
-    def add(self, name, agent):
-        """ Adds a new weak reference """
-        self.refs[name] = weakref.proxy(agent)
-
-    def get(self, name):
-        """ Returns the weak reference """
-        try:
-            ref = self.refs[name]
-        except KeyError as exc:
-            raise KeyError(f'No weak reference found for {name}') from exc
-        if not ref:
-            raise MissingReferenceError(f'No weak reference set to {name}')
-        return ref
-
-    def clear(self):
-        """ Clears all weak references """
-        self.refs = {}
-
-
-worker_refs = WeakReferences()
-gui_refs = WeakReferences()
+from pqthreads import refs
 
 
 class WorkerAgency(QtCore.QObject):
@@ -71,7 +39,7 @@ class WorkerAgency(QtCore.QObject):
         item_class = item_class.with_agent(agent)
         container = containers.WorkerItemContainer(item_class=item_class)
         self.worker_containers[name] = container
-        worker_refs.add(name, container)
+        refs.worker.add(name, container)
 
     def stop_signal_wait(self):
         """ Stop signal wait """
@@ -143,7 +111,7 @@ class GUIAgency(QtCore.QObject): # pylint: disable=too-many-instance-attributes
         for name, item_class in self.gui_agents_classes.items():
             self.gui_containers[name] = containers.GUIItemContainer(item_class, parent=self)
             self.gui_agents[name] = agents.GUIAgent(name, self.gui_containers[name], parent=self)
-            gui_refs.add(name, self.gui_containers[name])
+            refs.gui.add(name, self.gui_containers[name])
 
     def setup_worker(self):
         """ Setup worker thread """

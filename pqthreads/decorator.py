@@ -3,6 +3,7 @@
 import functools
 import wrapt
 from pqthreads import controllers
+from pqthreads import refs
 
 
 class DecoratorCore:
@@ -33,8 +34,8 @@ class DecoratorCore:
         gui_agency = self.gui_agency_class(worker=wrapped, *args, **kwargs)
         self.add_worker_agents(gui_agency.worker_agency)
         gui_agency.execute()
-        controllers.gui_refs.clear()
-        controllers.worker_refs.clear()
+        refs.gui.clear()
+        refs.worker.clear()
         return gui_agency.result
 
     def add_gui_agents(self, gui_agency_class):
