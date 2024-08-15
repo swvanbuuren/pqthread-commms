@@ -1,20 +1,37 @@
 # Pqthreads
 
 Pqthreads exposes class interfaces from the main GUI Thread in another
-QThread in Qt for Python. In doing so, it facilitates communication between the
-main (GUI) thread and a dedicated `QThread`s as offered by [Qt for Python (PySide)](https://wiki.qt.io/Qt_for_Python).
+QThread in [Qt for Python (PySide)](https://wiki.qt.io/Qt_for_Python). In doing so, it facilitates communication between the
+main (GUI) thread and a dedicated `QThread`s as offered by [Qt for Python](https://wiki.qt.io/Qt_for_Python).
+
 
 ## Usage
 
-In order to use pqhreads, you'll first need a GUI implementation (with Qt for
-Python) whose interface you'd like to expose. This usually would be a class that derives from e.g.
-[QMainWindow](https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QMainWindow.html). A very basic example class called `FigureWindow` can be found in [window.py](pqthreads/examples/window.py).
+In order to use pqhreads, you'll first need a GUI implementation (in [Qt for
+Python (PySide)](https://wiki.qt.io/Qt_for_Python)) whose interface you'd like
+to expose. Then you need to have a corresponding class that exposes (chosen)
+methods and attributes in another thread.
 
-Using a class that inherites from [containers.WorkerItem](pqthreads/containers.py) you then choose which methods and attributes are exposed. An examples of this would be the class `FigureWorker` in [worker.py](pqthreads/examples/worker.py).
+### GUI implementation
 
-Using the GUI implementation `FigureWindow` and worker threads exposure class
-`FigureWorker` the utilities from [decorator.py](pqthreads/decorator.py) can be
-used to create a custom decorator:
+The GUI implementation would be a class that derives from
+[QWidget](https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QWidget.html), e.g.
+[QMainWindow](https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QMainWindow.html).
+A very basic example class called `FigureWindow` can be found in
+[window.py](pqthreads/examples/window.py#L11).
+
+### Worker class
+
+In a class that inherits from
+[containers.WorkerItem](pqthreads/containers.py#L19) you then choose which
+methods and attributes are exposed. An examples of this is the class
+`FigureWorker` as found in [worker.py](pqthreads/examples/worker.py#L14).
+
+### Putting it all together
+
+Using the GUI implementation `FigureWindow` and worker class `FigureWorker` the
+utilities from [decorator.py](pqthreads/decorator.py) can be used to create a
+custom decorator:
 
 ```python
 from pqthreads import decorator
@@ -24,14 +41,14 @@ DecoratorCore.add_agent('figure', window.FigureWindow, FigureWorker)
 decorator_example = decorator.Decorator(DecoratorCore)
 ``` 
 
-Any decorated function now runs in the worker thread, while all GUI elements run
+Any decorated function will run in the worker thread, while all GUI elements run
 in the (main) GUI thread.
 
 To simplify access to worker class interfaces, a helper function is useful. This
 also illustrates how to create and access new GUI elements:
 
 ```python
-from pqthreads import decorator
+from pqthreads import controllers
 
 def figure(*args, **kwargs):
     """ Create, raise or modify FigureWorker objects """
@@ -46,7 +63,9 @@ def figure(*args, **kwargs):
 This can finally be used to to expose GUI implementation in an existing python
 program that will run in another worker thread.
 
-```
+```python
+from pqthreads.examples import worker
+
 @decorator_example
 def main():
     fig = worker.figure(title='Initial title')
@@ -56,14 +75,19 @@ def main():
 
 ## Pittfalls
 
-As illustrated in the previous section worker class interfaces are accessed
-through the so-called `worker_refs`, which is provided in the module [`controllers`](pqthreads/controllers.py). All interfaces are provided as weak references. As soon as the decorated function is exited, the weak references will invalidate! Therefore, it's recommended to decorate the function that encompases the whole python program in question.
+As illustrated in the previous section, worker class interfaces are accessed
+through the so-called `worker_refs` (as is provided in the module
+[`controllers`](pqthreads/controllers.py)). All interfaces are provided as weak
+references. As soon as the decorated function is exited, the weak references
+will invalidate and can't be used anymore. Therefore, it's recommended to
+decorate the function that encapsulates the whole python program in question.
+This assures that different parts of your own program run in different threads.
 
 The module [`controllers`](pqthreads/controllers.py) also comes with an object
-called ``gui_refs` that stores weak references to the GUI objects. These also will invalidate when the decorated function is left.
+called `gui_refs` that stores weak references to the GUI objects. These also
+will invalidate when the decorated function is exited.
 
-Finally, one should not access the `worker_refs` from the (main) GUI thread and also not access `gui_refs` from the worker thread. This can lead to trace errors and all sorts of undefined behavior. You have been warned!
-
+Finally, one should not access the `worker_refs` from the (main) GUI thread and also not access `gui_refs` from the worker thread. This can lead to trace errors and all sorts of undefined behavior. **You have been warned!**
 
 ## Design
 
@@ -74,7 +98,7 @@ shall be called the worker threads.
 
 The following schematic depicts this design.
 
-![Pqthreads design](doc/design.svg)
+![Pqthreads design](https://github.com/swvanbuuren/pqthreads/raw/master/doc/design.svg)
 
 Communication between the GUI and worker threads is solely done using
 Signal/Slot connections. This is facilitated by the `GUIAgent`s and
