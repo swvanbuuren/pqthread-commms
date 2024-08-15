@@ -4,6 +4,13 @@ Pqthreads exposes class interfaces from the main GUI Thread in another
 QThread in [Qt for Python (PySide)](https://wiki.qt.io/Qt_for_Python). In doing so, it facilitates communication between the
 main (GUI) thread and a dedicated `QThread`s as offered by [Qt for Python](https://wiki.qt.io/Qt_for_Python).
 
+## Installation
+
+Pqthreads comes as a PyPi python package and can be installed using pip:
+
+```console
+pip install pqthreads
+```
 
 ## Usage
 
