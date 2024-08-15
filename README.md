@@ -6,7 +6,8 @@ main (GUI) thread and a dedicated `QThread`s as offered by [Qt for Python](https
 
 ## Installation
 
-Pqthreads comes as a PyPi python package and can be installed using pip:
+Pqthreads comes as a [package](https://pypi.org/project/pqthreads/) in the
+[Python Package Index (PyPi)](https://pypi.org/) and can be installed using pip:
 
 ```console
 pip install pqthreads
