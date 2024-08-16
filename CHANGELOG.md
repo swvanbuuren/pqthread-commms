@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.3.2 (2024-08-16)
+
+### Fix
+
+* fix(release): Fix/configure version locations
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`31e434b`](https://github.com/swvanbuuren/pqthreads/commit/31e434bbaf3f331a48232fac54684cf759b9f890))
+
 ## v0.3.1 (2024-08-16)
 
 ### Fix
