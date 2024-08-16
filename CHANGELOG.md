@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v0.3.1 (2024-08-16)
+
+### Fix
+
+* fix(release): fix python semantic release action job
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`24e5417`](https://github.com/swvanbuuren/pqthreads/commit/24e54174bb5dda54e4234d91aa5fdf6cc8b7f353))
+
+* fix(release): Integrate GitHub Action workflows and set correct version
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`219f0ba`](https://github.com/swvanbuuren/pqthreads/commit/219f0ba7f412a8d5c02d28cf71ca8d0f2c933566))
+
 ## v0.3.0 (2024-08-16)
 
 ### Feature
