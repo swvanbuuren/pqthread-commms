@@ -26,20 +26,22 @@ The GUI implementation would be a class that derives from
 [QWidget](https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QWidget.html), e.g.
 [QMainWindow](https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QMainWindow.html).
 A very basic example class called `FigureWindow` can be found in
-[window.py](pqthreads/examples/window.py#L11).
+[window.py](https://github.com/swvanbuuren/pqthreads/blob/master/pqthreads/examples/window.py#L11).
 
 ### Worker class
 
 In a class that inherits from
-[containers.WorkerItem](pqthreads/containers.py#L90) you then choose which
-methods and attributes are exposed. An examples of this is the class
-`FigureWorker` as found in [worker.py](pqthreads/examples/worker.py#L14).
+[containers.WorkerItem](https://github.com/swvanbuuren/pqthreads/blob/master/pqthreads/containers.py#L90)
+you then choose which methods and attributes are exposed. An examples of this is
+the class `FigureWorker` as found in
+[worker.py](https://github.com/swvanbuuren/pqthreads/blob/master/pqthreads/examples/worker.py#L14).
 
 ### Putting it all together
 
 Using the GUI implementation `FigureWindow` and worker class `FigureWorker` the
-utilities from [decorator.py](pqthreads/decorator.py) can be used to create a
-custom decorator:
+utilities from
+[decorator.py](https://github.com/swvanbuuren/pqthreads/blob/master/pqthreads/decorator.py)
+can be used to create a custom decorator:
 
 ```python
 from pqthreads import decorator
@@ -85,13 +87,14 @@ def main():
 
 As illustrated in the previous section, worker class interfaces are accessed
 through the so-called `worker` references (as is provided in the module
-[`refs`](pqthreads/refs.py)). All interfaces are provided as weak references. As
-soon as the decorated function is exited, the weak references will invalidate
-and can't be used anymore. Therefore, it's recommended to decorate the function
-that encapsulates the whole python program in question. This assures that
-different parts of your own program run in different threads.
+[`refs`](https://github.com/swvanbuuren/pqthreads/blob/master/pqthreads/refs.py)).
+All interfaces are provided as weak references. As soon as the decorated
+function is exited, the weak references will invalidate and can't be used
+anymore. Therefore, it's recommended to decorate the function that encapsulates
+the whole python program in question. This assures that different parts of your
+own program run in different threads.
 
-The module [`refs`](pqthreads/refs.py) also comes with an object called `gui`
+The module [`refs`](https://github.com/swvanbuuren/pqthreads/blob/master/pqthreads/refs.py) also comes with an object called `gui`
 references that stores weak references to the GUI objects. These also will
 invalidate when the decorated function is exited.
 
