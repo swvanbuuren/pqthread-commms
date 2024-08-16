@@ -31,7 +31,7 @@ A very basic example class called `FigureWindow` can be found in
 ### Worker class
 
 In a class that inherits from
-[containers.WorkerItem](pqthreads/containers.py#L19) you then choose which
+[containers.WorkerItem](pqthreads/containers.py#L90) you then choose which
 methods and attributes are exposed. An examples of this is the class
 `FigureWorker` as found in [worker.py](pqthreads/examples/worker.py#L14).
 
