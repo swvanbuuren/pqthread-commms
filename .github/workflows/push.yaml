@@ -1,4 +1,11 @@
-# Main workflow
+# Workflow for push commit to master branch 
+
+# This workflow uses python semantic releases, which relies on certain commit tags to
+# determine if a new release/version should be created.
+# Checkout https://github.com/python-semantic-release/python-semantic-release form more
+# info on how to use it.
+# Also checkout https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#type to
+# which types of commit messages are accepted
 
 on:
   push:
@@ -7,38 +14,7 @@ on:
 
 jobs:
   test-and-lint:
-    name: Test and Lint
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-    env:
-      DISPLAY: ':99.0'
-      QT_SELECT: "qt6"
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install pylint pytest
-        python -m pip install .
-    - name: Lint with pylint
-      run: |
-        pylint pqthreads
-    - name: Install test dependencies
-      run: |
-        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0 libglib2.0-0 libgl1-mesa-dev
-        sudo apt-get install -y '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
-        # start xvfb in the background
-        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1920x1080x24 &
-    - name: Test with pytest
-      run: |
-        pytest -v -s
+    uses: ./.github/workflows/test-and-lint.yaml
 
   release:
     name: Semantic Release
