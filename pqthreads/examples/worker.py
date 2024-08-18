@@ -50,8 +50,20 @@ def graph(*args, **kwargs):
     return graph_worker
 
 
+global_kwargs = {}
+
+
 # Configure decorators
-DecoratorCore = decorator.DecoratorCore
-DecoratorCore.add_agent('figure', window.FigureWindow, FigureWorker)
-DecoratorCore.add_agent('graph', window.GraphWindow, GraphWorker)
-decorator_example = decorator.Decorator(DecoratorCore)
+class ExampleDecoratorCore(decorator.DecoratorCore):
+    """ Exemplary decorator core class, with extra testing functionality for
+    global keyword arguments """
+
+    def __init__(self, **dec_kwargs):
+        """ Reimplement this to make use of decorator's keyword arguments """
+        global_kwargs.update(dec_kwargs)
+        super().__init__(**dec_kwargs)
+
+
+ExampleDecoratorCore.add_agent('figure', window.FigureWindow, FigureWorker)
+ExampleDecoratorCore.add_agent('graph', window.GraphWindow, GraphWorker)
+decorator_example = decorator.Decorator(ExampleDecoratorCore)
