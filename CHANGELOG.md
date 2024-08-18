@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## v0.3.3 (2024-08-18)
+
+### Chore
+
+* chore: Refactor github workflows to avoid duplicates
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`72a217c`](https://github.com/swvanbuuren/pqthreads/commit/72a217c132a021072d7977658f0634fcc67eca19))
+
+### Documentation
+
+* docs: Make links in README absolute
+
+To make the links also work in PyPi.
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`ad863fd`](https://github.com/swvanbuuren/pqthreads/commit/ad863fdc006ba1d0cca55e510be6b76c10475790))
+
+* docs: Fix linen umber in link to WorkerItem
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`3e7c6d8`](https://github.com/swvanbuuren/pqthreads/commit/3e7c6d8d56d4db892cd8c99bdf80406d9d7a19e4))
+
+### Fix
+
+* fix: Decorator keyword arguments input
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`fb2123e`](https://github.com/swvanbuuren/pqthreads/commit/fb2123ebf2bd1abff383ba7c36f582d1b3ef02c8))
+
+### Test
+
+* test: Add tests for decorator keyword arguments usage
+
+Signed-off-by: Sietze van Buuren &lt;s.van.buuren@gmail.com&gt; ([`daa29b0`](https://github.com/swvanbuuren/pqthreads/commit/daa29b0267ade6e875b2a023664aea233b8dd045))
+
 ## v0.3.2 (2024-08-16)
 
 ### Fix
