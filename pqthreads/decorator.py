@@ -55,7 +55,7 @@ class Decorator: # pylint: disable=too-few-public-methods
     def __init__(self, decorator_class: DecoratorCore):
         self.decorator_class = decorator_class
 
-    def __call__(self, wrapped, **kwargs):
+    def __call__(self, wrapped=None, **kwargs):
         """ Enables usage with and without decorator keyword arguments """
         if wrapped is None:
             return functools.partial(self.__call__, **kwargs)
