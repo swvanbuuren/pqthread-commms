@@ -121,3 +121,30 @@ def test_multiple_agent_types():
 
     result = main()
     assert result == 'Test successful'
+
+
+def test_decorator_keyword_argument():
+    """ Test functionality of single decorator keyword argument """
+
+    @worker.decorator_example(keyword_argument='test')
+    def main():
+        """ Helper function """
+        fig = worker.figure()
+        fig.close()
+
+    main()
+    assert worker.global_kwargs['keyword_argument'] == 'test'
+
+
+def test_multiple_decorator_keyword_arguments():
+    """ Test functionality of multiple decorator keyword arguments """
+
+    @worker.decorator_example(first_kwarg='first_arg', second_kw='second_arg')
+    def main():
+        """ Helper function """
+        fig = worker.figure()
+        fig.close()
+
+    main()
+    assert worker.global_kwargs['first_kwarg'] == 'first_arg'
+    assert worker.global_kwargs['second_kw'] == 'second_arg'
