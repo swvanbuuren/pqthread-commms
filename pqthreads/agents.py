@@ -7,6 +7,7 @@ from copy import copy
 from contextlib import contextmanager
 from pqthreads.qt import QtCore
 from pqthreads import utils
+from pqthreads import SIGNAL_SLOT_TIMEOUT
 
 
 class RootTCException(Exception):
@@ -40,6 +41,7 @@ class WorkerAgent(QtCore.QObject):
         self.name = name
         self.signal_waiter = utils.SignalWaiter(self.dataRecevied,
                                                 error_signal=self.stopSignalwait,
+                                                timeout=SIGNAL_SLOT_TIMEOUT,
                                                 parent=self)
 
     def __repr__(self):
