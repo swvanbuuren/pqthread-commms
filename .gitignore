@@ -3,3 +3,4 @@
 pqthreads.egg-info/
 .pytest_cache/
 build/
+uv.lock
