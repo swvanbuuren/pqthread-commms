@@ -113,11 +113,9 @@ class DescriptorFactory:
         """ Produce attribute descriptor class """
         self.attributes.append(self.attribute_descriptor_class)
         return self.attributes[-1]
-        #return self.attribute_descriptor_class.with_agent(self.agent)
 
     @property
     def method(self):
         """ Produce method descriptor class """
         self.attributes.append(self.method_descriptor_class)
         return self.attributes[-1]
-        #return self.method_descriptor_class.with_agent(self.agent)
