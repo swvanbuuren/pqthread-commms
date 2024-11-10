@@ -27,6 +27,12 @@ dependencies = [
     "wrapt",
 ]
 
+[dependency-groups]
+dev = [
+  "pylint",
+  "pytest",
+]
+
 [tool.setuptools.packages.find]
 include = ["pqthreads", "pqthreads.*"]
 
