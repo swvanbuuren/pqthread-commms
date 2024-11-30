@@ -130,6 +130,15 @@ For each type of GUI/Worker object pair, it's also possible to instantiate
 multiple objects (of the same type). GUI and Worker objects are held in the
 `GUIItemContainer` and `WorkerItemContainer` respectively.
 
+## Pre-commit hooks
+
+This repository comes with pre-commit hooks, which are stored in
+[`.githooks`](.githooks). To enable the hooks issue:
+
+```bash
+git config --local core.hooksPath .githooks/
+```
+
 ## License
 
 An MIT style license applies for `pqthreads`, see the [LICENSE](LICENSE)
